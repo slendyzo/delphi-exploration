@@ -171,9 +171,12 @@
                     <div class="status" id="viewIdeaStatus"></div>
                 </div>
                 <div class="idea-interactions">
-                    <button class="interaction-btn"><i class="far fa-heart"></i> <span id="viewIdeaLikes"></span></button>
-                    <button class="interaction-btn"><i class="far fa-comment"></i> <span id="viewIdeaCommentsCount"></span></button>
-                    <button class="interaction-btn"><i class="fas fa-bookmark"></i> <span id="viewIdeaShares"></span></button>
+                    <!-- MODIFIED: Added data-idea-id (will be set by JS) and class like-btn-sidebar -->
+                    <button class="interaction-btn like-btn-sidebar" title="Like" data-idea-id="">
+                        <i class="far fa-heart"></i> <span id="viewIdeaLikes"></span>
+                    </button>
+                    <button class="interaction-btn" title="Comment"><i class="far fa-comment"></i> <span id="viewIdeaCommentsCount"></span></button>
+                    <button class="interaction-btn" title="Bookmark"><i class="fas fa-bookmark"></i> <span id="viewIdeaShares"></span></button>
                     <button class="interaction-btn" title="More options"><i class="fas fa-ellipsis-h"></i></button>
                     <button class="interaction-btn" title="Share"><i class="fas fa-share-alt"></i></button>
                 </div>

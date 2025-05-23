@@ -19,7 +19,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const mobileNavToggle = document.querySelector('.mobile-nav-toggle');
     const mainNav = document.querySelector('.main-nav');
     const mobileSearchToggle = document.querySelector('.search-toggle-mobile');
-    const mainContentElement = document.querySelector('.main-content'); // Added for full-bleed
+    const mainContentElement = document.querySelector('.main-content'); // For full-bleed V2
 
 
     // --- Initial Data (Sample Ideas) ---
@@ -63,7 +63,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    function createIdeaCard(idea) { // This is for V1 ideas
+    function createIdeaCard(idea) { // V1 Card
         if (!idea) { console.error("[createIdeaCard] Idea object is undefined."); return null; }
         const card = document.createElement('div');
         card.classList.add('idea-card');
@@ -75,6 +75,7 @@ document.addEventListener('DOMContentLoaded', () => {
             else if (networkLower === 'solana') networkIconHtml = `<i class="fa-brands fa-solana"></i>`;
             else if (networkLower === 'bitcoin') networkIconHtml = `<i class="fab fa-btc"></i>`;
         }
+        const isLiked = idea.isLiked || false;
         try {
             card.innerHTML = `
                 <div class="idea-card-top-section">
@@ -103,13 +104,23 @@ document.addEventListener('DOMContentLoaded', () => {
                         ${idea.author || 'Anonymous'}
                     </span>
                     <div class="idea-card-actions">
-                        <button title="Like"><i class="far fa-heart"></i> ${idea.likes || 0}</button>
+                        <button class="like-btn-v1 ${isLiked ? 'liked' : ''}" data-idea-id="${idea.id}" title="Like">
+                            <i class="${isLiked ? 'fas' : 'far'} fa-heart"></i> <span class="like-count">${idea.likes || 0}</span>
+                        </button>
                         <button title="Comment"><i class="far fa-comment"></i> ${idea.commentsCount || 0}</button>
                         <button title="Bookmark"><i class="far fa-bookmark"></i></button>
                     </div>
                 </div>`;
         } catch (error) { console.error(`[createIdeaCard] Error for ${idea.title || `ID: ${idea.id}`}:`, error, idea); return card; }
-        card.addEventListener('click', (e) => { if (e.target.closest('button')) return; populateViewSidebar(idea.id); toggleSidebar(viewIdeaSidebar, true); });
+        
+        const likeButtonV1 = card.querySelector('.like-btn-v1');
+        if (likeButtonV1) {
+            likeButtonV1.addEventListener('click', function(event) {
+                event.stopPropagation();
+                handleLikeButtonClick(this, idea.id); 
+            });
+        }
+        card.addEventListener('click', (e) => { if (e.target.closest('.idea-card-actions button')) return; populateViewSidebar(idea.id); toggleSidebar(viewIdeaSidebar, true); });
         return card;
     }
 
@@ -122,7 +133,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    function createIdeaCardV2(idea) {
+    function createIdeaCardV2(idea) { // V2 Card
         if (!idea) { console.error("[createIdeaCardV2] Idea object is undefined."); return null; }
         const card = document.createElement('div');
         card.classList.add('idea-card-v2');
@@ -166,38 +177,69 @@ document.addEventListener('DOMContentLoaded', () => {
                     <button title="Bookmark"><i class="far fa-bookmark"></i></button>
                 </div>
             </div>`;
-        const likeButton = card.querySelector('.like-btn-v2');
-        if (likeButton) {
-            likeButton.addEventListener('click', function(event) {
+        const likeButtonV2 = card.querySelector('.like-btn-v2');
+        if (likeButtonV2) {
+            likeButtonV2.addEventListener('click', function(event) {
                 event.stopPropagation();
-                const clickedIdeaId = this.dataset.ideaId;
-                const ideaToUpdate = ideas.find(i => i.id == clickedIdeaId);
-                if (ideaToUpdate) {
-                    ideaToUpdate.isLiked = !ideaToUpdate.isLiked;
-                    if (ideaToUpdate.isLiked) ideaToUpdate.likes = (ideaToUpdate.likes || 0) + 1;
-                    else ideaToUpdate.likes = Math.max(0, (ideaToUpdate.likes || 0) - 1);
-                    this.classList.toggle('liked', ideaToUpdate.isLiked);
-                    this.querySelector('.like-count').textContent = ideaToUpdate.likes;
-                    const heartIcon = this.querySelector('i');
-                    if (heartIcon) { heartIcon.classList.toggle('far', !ideaToUpdate.isLiked); heartIcon.classList.toggle('fas', ideaToUpdate.isLiked); }
-                    const currentViewSidebar = document.getElementById('viewIdeaSidebar'); // Use the global var
-                    if (currentViewSidebar.classList.contains('open')) {
-                        const currentSidebarIdeaId = currentViewSidebar.querySelector('.comments-section')?.dataset.currentIdeaId;
-                        if (currentSidebarIdeaId == clickedIdeaId) {
-                            const likesSpan = currentViewSidebar.querySelector('#viewIdeaLikes');
-                            if (likesSpan) likesSpan.textContent = ideaToUpdate.likes;
-                        }
-                    }
-                }
+                handleLikeButtonClick(this, idea.id);
             });
         }
-        card.addEventListener('click', (e) => {
-            if (e.target.closest('button.like-btn-v2') || e.target.closest('button[title="Comment"]') || e.target.closest('button[title="Bookmark"]')) return;
-            populateViewSidebar(idea.id); toggleSidebar(viewIdeaSidebar, true);
-        });
+        card.addEventListener('click', (e) => { if (e.target.closest('.idea-card-v2-actions button')) return; populateViewSidebar(idea.id); toggleSidebar(viewIdeaSidebar, true); });
         return card;
     }
     
+    function handleLikeButtonClick(buttonElement, ideaId) { // Common like handler
+        const ideaToUpdate = ideas.find(i => i.id == ideaId);
+        if (ideaToUpdate) {
+            ideaToUpdate.isLiked = !ideaToUpdate.isLiked;
+            if (ideaToUpdate.isLiked) ideaToUpdate.likes = (ideaToUpdate.likes || 0) + 1;
+            else ideaToUpdate.likes = Math.max(0, (ideaToUpdate.likes || 0) - 1);
+
+            // Update the clicked button (card v1 or v2)
+            buttonElement.classList.toggle('liked', ideaToUpdate.isLiked);
+            const likeCountSpan = buttonElement.querySelector('.like-count');
+            if (likeCountSpan) likeCountSpan.textContent = ideaToUpdate.likes;
+            const heartIcon = buttonElement.querySelector('i');
+            if (heartIcon) { heartIcon.classList.toggle('far', !ideaToUpdate.isLiked); heartIcon.classList.toggle('fas', ideaToUpdate.isLiked); }
+
+            // Update the other card type if visible
+            if (buttonElement.classList.contains('like-btn-v1') && ideasContainerV2.style.display !== 'none') {
+                const otherCardButton = ideasContainerV2.querySelector(`.like-btn-v2[data-idea-id="${ideaId}"]`);
+                if (otherCardButton) {
+                    otherCardButton.classList.toggle('liked', ideaToUpdate.isLiked);
+                    otherCardButton.querySelector('.like-count').textContent = ideaToUpdate.likes;
+                    const otherIcon = otherCardButton.querySelector('i');
+                    if (otherIcon) { otherIcon.classList.toggle('far', !ideaToUpdate.isLiked); otherIcon.classList.toggle('fas', ideaToUpdate.isLiked); }
+                }
+            } else if (buttonElement.classList.contains('like-btn-v2') && ideasContainerV1.style.display !== 'none') {
+                const otherCardButton = ideasContainerV1.querySelector(`.like-btn-v1[data-idea-id="${ideaId}"]`);
+                if (otherCardButton) {
+                    otherCardButton.classList.toggle('liked', ideaToUpdate.isLiked);
+                    otherCardButton.querySelector('.like-count').textContent = ideaToUpdate.likes;
+                    const otherIcon = otherCardButton.querySelector('i');
+                    if (otherIcon) { otherIcon.classList.toggle('far', !ideaToUpdate.isLiked); otherIcon.classList.toggle('fas', ideaToUpdate.isLiked); }
+                }
+            }
+            
+            // Update sidebar if it's open and showing this idea
+            if (viewIdeaSidebar.classList.contains('open')) {
+                const currentSidebarIdeaId = viewIdeaSidebar.querySelector('.comments-section')?.dataset.currentIdeaId;
+                if (currentSidebarIdeaId == ideaId) {
+                    const likesSpanInSidebar = viewIdeaSidebar.querySelector('#viewIdeaLikes');
+                    if (likesSpanInSidebar) likesSpanInSidebar.textContent = ideaToUpdate.likes;
+                    const sidebarHeartIcon = viewIdeaSidebar.querySelector('.like-btn-sidebar i.fa-heart');
+                    if (sidebarHeartIcon) {
+                        sidebarHeartIcon.classList.toggle('far', !ideaToUpdate.isLiked);
+                        sidebarHeartIcon.classList.toggle('fas', ideaToUpdate.isLiked);
+                        sidebarHeartIcon.style.color = ideaToUpdate.isLiked ? '#007bff' : '';
+                    }
+                    const sidebarLikeBtnElem = viewIdeaSidebar.querySelector('.like-btn-sidebar');
+                    if(sidebarLikeBtnElem) sidebarLikeBtnElem.classList.toggle('liked', ideaToUpdate.isLiked);
+                }
+            }
+        }
+    }
+
     if (submitIdeaForm) {
         submitIdeaForm.addEventListener('submit', function (event) {
             event.preventDefault();
@@ -261,6 +303,27 @@ document.addEventListener('DOMContentLoaded', () => {
             viewIdeaSidebar.querySelector('#viewIdeaExitDate').textContent = idea.exitDate || "N/A";
             const commentSection = viewIdeaSidebar.querySelector('.comments-section');
             if (commentSection) commentSection.dataset.currentIdeaId = idea.id;
+
+            const sidebarLikeButton = viewIdeaSidebar.querySelector('.like-btn-sidebar');
+            if (sidebarLikeButton) {
+                sidebarLikeButton.dataset.ideaId = idea.id; // Set ideaId for the handler
+                const sidebarHeartIcon = sidebarLikeButton.querySelector('i.fa-heart');
+                if (sidebarHeartIcon) {
+                    sidebarHeartIcon.classList.toggle('far', !idea.isLiked);
+                    sidebarHeartIcon.classList.toggle('fas', idea.isLiked);
+                    sidebarHeartIcon.style.color = idea.isLiked ? '#007bff' : ''; // Or use a class
+                }
+                sidebarLikeButton.classList.toggle('liked', idea.isLiked); // Add/remove liked class
+                 // Remove old listener before adding new one if this function can be called multiple times for same sidebar view
+                if (sidebarLikeButton.handleLikeClick) { // Check if custom property exists
+                    sidebarLikeButton.removeEventListener('click', sidebarLikeButton.handleLikeClick);
+                }
+                sidebarLikeButton.handleLikeClick = function(event) { // Store function reference
+                    event.stopPropagation();
+                    handleLikeButtonClick(this, idea.id); // Pass button and ideaId
+                };
+                sidebarLikeButton.addEventListener('click', sidebarLikeButton.handleLikeClick);
+            }
             renderComments(idea.id);
         } catch (error) { console.error(`[populateViewSidebar] Error for ID ${ideaId}:`, error); }
     }
@@ -293,9 +356,10 @@ document.addEventListener('DOMContentLoaded', () => {
         if (ideasContainerV1) {
             const cardV1 = ideasContainerV1.querySelector(`.idea-card[data-idea-id='${ideaId}']`);
             if (cardV1) {
-                const commentCountElement = cardV1.querySelector('.fa-comment');
-                if (commentCountElement && commentCountElement.nextSibling) {
-                     commentCountElement.nextSibling.textContent = ` ${count}`;
+                const commentCountElement = cardV1.querySelector('button[title="Comment"]');
+                if (commentCountElement){
+                    const icon = commentCountElement.querySelector('i');
+                    commentCountElement.innerHTML = (icon ? icon.outerHTML : '') + ` ${count}`;
                 }
             }
         }
@@ -331,7 +395,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (!idea.comments) idea.comments = [];
                 idea.comments.push(newComment);
                 idea.commentsCount = idea.comments.length;
-                renderComments(currentIdeaId);
+                renderComments(currentIdeaId); // This will also call updateCardCommentCount
                 newCommentText.value = '';
             }
         });
@@ -410,7 +474,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
         const pageTitleElement = document.querySelector('.feature-header h1');
         
-        if (mainContentElement) { // Always remove full-bleed first
+        if (mainContentElement) { 
             mainContentElement.classList.remove('ideas-v2-full-bleed');
         }
 
@@ -424,7 +488,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (pageTitleElement) pageTitleElement.textContent = 'Untitled Shill Feature (v1)';
             renderIdeasV1();
         } else if (targetTab === 'ideas-v2') {
-            if (mainContentElement) mainContentElement.classList.add('ideas-v2-full-bleed'); // Add for V2
+            if (mainContentElement) mainContentElement.classList.add('ideas-v2-full-bleed');
             if (ideasContainerV2) ideasContainerV2.style.display = 'grid';
             if (pageTitleElement) pageTitleElement.textContent = 'Untitled Shill Feature (v2)';
             renderIdeasV2();
