@@ -138,7 +138,44 @@ body {
 .ideas-list-container-v2 {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
-    gap: 20px;
+    gap: 15px; /* Keep the gap between cards */
+    
+    /* To make it use more screen space, assuming .main-content has horizontal padding of 20px */
+    /* These values should match the horizontal padding of .main-content */
+    margin-left: -20px; 
+    margin-right: -20px;
+    padding-left: 15px; /* Add some padding back so cards aren't glued to absolute screen edge */
+    padding-right: 15px;
+    padding-top: 15px; /* Consistent padding around the grid */
+    padding-bottom: 15px;
+}
+
+/* Adjustments within media queries if needed for full-bleed on mobile */
+@media (max-width: 768px) {
+    .ideas-list-container-v2 {
+        /* If .main-content padding changes on mobile, adjust these negative margins too */
+        margin-left: -15px; /* Assuming .main-content padding is 15px on mobile */
+        margin-right: -15px;
+        padding-left: 10px; /* Inner padding for mobile grid */
+        padding-right: 10px;
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); /* Smaller cards on mobile */
+        gap: 10px;
+    }
+}
+
+/* Ensure .main-content allows overflow if negative margins are used,
+   or ensure it's wide enough that this doesn't cause horizontal scrollbars
+   on the body. A better way might be to adjust .main-content padding via JS
+   when this tab is active, but let's try CSS first.
+*/
+/* An alternative to negative margins for .ideas-list-container-v2:
+   If you want to manage it by changing .main-content padding via JS when 'ideas-v2' tab is active:
+   (This would require JS to add/remove a class to .main-content)
+.main-content.ideas-v2-active {
+    padding-left: 5px;
+    padding-right: 5px;
+}
+*/
 }
 .idea-card-v2 {
     background-color: #1C1E21; padding: 15px; border-radius: 8px; color: #adb5bd;
@@ -472,3 +509,18 @@ body {
     #viewIdeaSidebar .sidebar-header h2 { font-size: 1.1em; margin-left: -20px; }
     #viewIdeaSidebar .sidebar-header .close-btn { font-size: 20px; }
 }
+/* Add these styles for the V2 like button */
+
+.idea-card-v2-actions .like-btn-v2 i {
+    color: #6c757d; /* Default heart color */
+    transition: color 0.2s ease;
+}
+
+.idea-card-v2-actions .like-btn-v2.liked i {
+    color: #007bff; /* Blue color when liked - same as outline hover */
+    /* font-weight: 900; /* Makes Font Awesome 'fas' icons appear solid if using free version */
+}
+/* If you're using Font Awesome Pro, fas fa-heart will be solid by default.
+   For Font Awesome Free, `far fa-heart` is outline, `fas fa-heart` is solid.
+   The JS toggles these classes. The CSS above just colors the icon.
+*/

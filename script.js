@@ -124,17 +124,25 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!idea) { console.error("[createIdeaCardV2] Idea object is undefined."); return null; }
         const card = document.createElement('div');
         card.classList.add('idea-card-v2');
-        card.dataset.ideaId = idea.id;
+        card.dataset.ideaId = idea.id; // Used to identify the idea
+    
         let symbolIconHtml = '';
+        // ... (symbolIconHtml logic remains the same)
         if (idea.network) {
             const networkLower = idea.network.toLowerCase();
             if (networkLower === 'ethereum' || networkLower === 'bsc') symbolIconHtml = `<i class="fab fa-ethereum"></i>`;
             else if (networkLower === 'solana') symbolIconHtml = `<i class="fa-brands fa-solana"></i>`;
             else if (networkLower === 'bitcoin') symbolIconHtml = `<i class="fab fa-btc"></i>`;
         }
+    
         const returnOrPerf = idea.totalReturnsLeaderboard || idea.performance || '--';
-        const returnClass = (returnOrPerf.startsWith('+') || parseFloat(returnOrPerf.replace('%','')) > 0) ? 'positive' : (returnOrPerf.startsWith('-') || parseFloat(returnOrPerf.replace('%','')) < 0) ? 'negative' : '';
-
+        const returnClass = (returnOrPerf.startsWith('+') || parseFloat(returnOrPerf.replace(/[+%]/g,'')) > 0) ? 'positive' : (returnOrPerf.startsWith('-') || parseFloat(returnOrPerf.replace(/[+%]/g,'')) < 0) ? 'negative' : '';
+    
+        // Add an 'isLiked' property to your idea objects if it doesn't exist.
+        // For now, we'll assume it might not exist and default to false.
+        const isLiked = idea.isLiked || false;
+    
+    
         card.innerHTML = `
             <div class="idea-card-v2-header">
                 <h3 class="idea-card-v2-title">${idea.title || 'Untitled Idea'}</h3>
@@ -156,12 +164,64 @@ document.addEventListener('DOMContentLoaded', () => {
                     <span>${idea.author || 'Anonymous'}</span>
                 </div>
                 <div class="idea-card-v2-actions">
-                    <button><i class="far fa-heart"></i> ${idea.likes || 0}</button>
-                    <button><i class="far fa-comment"></i> ${idea.commentsCount || 0}</button>
-                    <button><i class="far fa-bookmark"></i></button>
+                    <button class="like-btn-v2 ${isLiked ? 'liked' : ''}" data-idea-id="${idea.id}" title="Like">
+                        <i class="far fa-heart"></i> <span class="like-count">${idea.likes || 0}</span>
+                    </button>
+                    <button title="Comment"><i class="far fa-comment"></i> ${idea.commentsCount || 0}</button>
+                    <button title="Bookmark"><i class="far fa-bookmark"></i></button>
                 </div>
-            </div>`;
-        card.addEventListener('click', (e) => { if (e.target.closest('button')) return; populateViewSidebar(idea.id); toggleSidebar(viewIdeaSidebar, true); });
+            </div>
+        `;
+    
+        // Event listener for the like button on THIS card
+        const likeButton = card.querySelector('.like-btn-v2');
+        if (likeButton) {
+            likeButton.addEventListener('click', function(event) {
+                event.stopPropagation(); // Prevent card click from triggering view sidebar
+    
+                const clickedIdeaId = this.dataset.ideaId;
+                const ideaToUpdate = ideas.find(i => i.id == clickedIdeaId);
+    
+                if (ideaToUpdate) {
+                    ideaToUpdate.isLiked = !ideaToUpdate.isLiked; // Toggle liked state
+                    if (ideaToUpdate.isLiked) {
+                        ideaToUpdate.likes = (ideaToUpdate.likes || 0) + 1;
+                    } else {
+                        ideaToUpdate.likes = Math.max(0, (ideaToUpdate.likes || 0) - 1); // Prevent negative likes
+                    }
+    
+                    // Update button appearance and count
+                    this.classList.toggle('liked', ideaToUpdate.isLiked);
+                    this.querySelector('.like-count').textContent = ideaToUpdate.likes;
+                    const heartIcon = this.querySelector('i');
+                    if (heartIcon) { // Toggle between regular and solid heart
+                        heartIcon.classList.toggle('far', !ideaToUpdate.isLiked); // Regular heart
+                        heartIcon.classList.toggle('fas', ideaToUpdate.isLiked);  // Solid heart
+                    }
+    
+                    // If the view sidebar is open for this idea, update it too
+                    const viewSidebar = document.getElementById('viewIdeaSidebar');
+                    if (viewSidebar.classList.contains('open')) {
+                        const currentSidebarIdeaId = viewSidebar.querySelector('.comments-section')?.dataset.currentIdeaId;
+                        if (currentSidebarIdeaId == clickedIdeaId) {
+                            const likesSpan = viewSidebar.querySelector('#viewIdeaLikes');
+                            if (likesSpan) likesSpan.textContent = ideaToUpdate.likes;
+                            // You might also want to update the like button style inside the sidebar
+                        }
+                    }
+                }
+            });
+        }
+    
+        // Main card click listener (to open view sidebar)
+        card.addEventListener('click', (e) => {
+            if (e.target.closest('button.like-btn-v2') || e.target.closest('button[title="Comment"]') || e.target.closest('button[title="Bookmark"]')) {
+                // If a button within actions was clicked, don't open sidebar (like button handles its own logic)
+                return;
+            }
+            populateViewSidebar(idea.id);
+            toggleSidebar(viewIdeaSidebar, true);
+        });
         return card;
     }
     
