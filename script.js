@@ -2,93 +2,151 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- DOM Element Selections ---
     const submitIdeaBtnPage = document.getElementById('submitIdeaBtnPage');
     const submitIdeaSidebar = document.getElementById('submitIdeaSidebar');
-    // ... (other existing selections) ...
-    const ideasContainerV1 = document.getElementById('ideasContainerV1'); // Updated ID
-    const ideasContainerV2 = document.getElementById('ideasContainerV2'); // New container for V2
-    const leaderboardContainer = document.getElementById('leaderboardContainer');
-    // ... (other existing selections) ...
-    const subNavLinks = document.querySelectorAll('.sub-nav-link');
+    const closeSubmitSidebarBtn = document.getElementById('closeSubmitSidebarBtn');
+    const submitIdeaForm = document.getElementById('submitIdeaForm'); // Declaration
+    const ideasContainerV1 = document.getElementById('ideasContainerV1');
+    const ideasContainerV2 = document.getElementById('ideasContainerV2');
+    const overlay = document.getElementById('overlay');
     const viewIdeaSidebar = document.getElementById('viewIdeaSidebar');
+    const closeViewSidebarBtn = document.getElementById('closeViewSidebarBtn');
+    const leaderboardContainer = document.getElementById('leaderboardContainer');
+    const leaderboardBody = document.getElementById('leaderboardBody');
+    const subNavLinks = document.querySelectorAll('.sub-nav-link');
+    const filtersBtn = document.getElementById('filtersBtn');
+    const filterPanel = document.getElementById('filterPanel');
+    const positionButtons = document.querySelectorAll('#submitIdeaForm .position-btn');
+    const hiddenPositionInput = document.getElementById('position');
+    const mobileNavToggle = document.querySelector('.mobile-nav-toggle'); // For mobile nav
+    const mainNav = document.querySelector('.main-nav'); // For mobile nav
+    const mobileSearchToggle = document.querySelector('.search-toggle-mobile'); // For mobile search
 
-
-    // --- Initial Data (Sample Ideas - keep as is or expand if v2 needs different fields initially) ---
-    let ideas = [ /* ... Your existing ideas array ... */ ];
+    // --- Initial Data (Sample Ideas) ---
+    let ideas = [
+        { id: 1, title: "Buy TIA", description: "The future of HyperLiquid looks promising...", author: "Username", authorAvatar: `https://i.pravatar.cc/20?u=${encodeURIComponent("Username")}`, date: "May 19, 2025", symbol: "HYPE", network: "Ethereum", position: "Long", thesis: "The future of HyperLiquid is very bright...", contractAddress: "0x2948...21238", totalReturn: "--", totalReturnsLeaderboard: "+33.000%", status: "Active", likes: 15, commentsCount: 3, shares: 5, marketCap: "$2.3B", volume: "$232.12M", performance: "+24%", exitDate: "July 24, 2025", comments: [ { userAvatar: `https://i.pravatar.cc/30?u=Commenter1`, author: "CommenterOne", username: "@One", time: "2hr ago", text: "Solid thesis, I'm in!" }, { userAvatar: `https://i.pravatar.cc/30?u=SkepticSal`, author: "SkepticSal", username: "@Sal", time: "1hr ago", text: "Hmm, seems a bit overhyped. What are the risks?" }, { userAvatar: `https://i.pravatar.cc/30?u=${encodeURIComponent("Username")}`, author: "Username", username: "@Username", time: "30m ago", text: "Valid point Sal, main risk is regulatory uncertainty, but the tech is solid." } ] },
+        { id: 2, title: "Short BTC", description: "Bitcoin facing headwinds...", author: "AlphaUser", authorAvatar: `https://i.pravatar.cc/20?u=${encodeURIComponent("AlphaUser")}`, date: "May 18, 2025", symbol: "BTC", network: "Bitcoin", position: "Short", thesis: "Bitcoin is overbought and due for a significant correction...", contractAddress: "N/A", totalReturn: "+180%", totalReturnsLeaderboard: "+27.500%", status: "Closed", likes: 10, commentsCount: 2, shares: 3, marketCap: "$1.2T", volume: "$180.45M", performance: "+19%", exitDate: "Aug 10, 2025", comments: [ { userAvatar: `https://i.pravatar.cc/30?u=BullishBob`, author: "BullishBob", username: "@Bob", time: "5hr ago", text: "Shorting BTC? Brave soul!" }, { userAvatar: `https://i.pravatar.cc/30?u=${encodeURIComponent("AlphaUser")}`, author: "AlphaUser", username: "@Alpha", time: "4hr ago", text: "It's a calculated risk. The indicators are there." } ] },
+        { id: 3, title: "Long TIA again", description: "Celestia's modular approach is key...", author: "BetaTester", authorAvatar: `https://i.pravatar.cc/20?u=${encodeURIComponent("BetaTester")}`, date: "May 17, 2025", symbol: "TIA", network: "Celestia", position: "Long", thesis: "Celestia's modular design for blockchains is groundbreaking...", contractAddress: "N/A", totalReturn: "+50%", totalReturnsLeaderboard: "+10.323%", status: "Active", likes: 5, commentsCount: 1, shares: 1, marketCap: "$2.5B", volume: "$300.75M", performance: "-53%", exitDate: "Sep 01, 2025", comments: [ { userAvatar: `https://i.pravatar.cc/30?u=TechGuru`, author: "TechGuru", username: "@Guru", time: "1d ago", text: "Agreed, the modularity is a game changer." } ] },
+        { id: 4, title: "KTA All In", description: "Kadena's multi-chain scalability.", author: "GammaGuest", authorAvatar: `https://i.pravatar.cc/20?u=${encodeURIComponent("GammaGuest")}`, date: "May 16, 2025", symbol: "KTA", network: "Kadena", position: "Long", thesis: "Kadena's unique chainweb architecture...", totalReturn:"--", totalReturnsLeaderboard: "+23.200%", status: "Active", likes: 2, commentsCount: 0, shares: 0, marketCap: "$100M", volume: "$150.60M", performance: "+24%", exitDate: "N/A", comments: [] },
+        { id: 5, title: "Bitcoin Dip Buy", description: "Accumulating BTC on this dip.", author: "DeltaDude", authorAvatar: `https://i.pravatar.cc/20?u=${encodeURIComponent("DeltaDude")}`, date: "May 15, 2025", symbol: "BTC", network: "Bitcoin", position: "Long", thesis: "This dip is a prime buying opportunity...", totalReturn:"--", totalReturnsLeaderboard: "+22.120%", status: "Pending", likes: 7, commentsCount: 0, shares: 0, marketCap: "$1.2T", volume: "$275.10M", performance: "-11%", exitDate: "N/A", comments: [] },
+        { id: 6, title: "POPCAT Mania", description: "Popcat to the moon!", author: "EpsilonExpert", authorAvatar: `https://i.pravatar.cc/20?u=${encodeURIComponent("EpsilonExpert")}`, date: "May 14, 2025", symbol: "POPCAT", network: "Solana", position: "Long", thesis: "POPCAT has the meme potential...", totalReturn:"--", totalReturnsLeaderboard: "+12.430%", status: "Active", likes: 15, commentsCount: 0, shares: 0, marketCap: "$50M", volume: "$290.00M", performance: "+21%", exitDate: "N/A", comments: [] },
+        { id: 7, title: "WIF Next Wave", description: "Dogwifhat still has room.", author: "ZetaZone", authorAvatar: `https://i.pravatar.cc/20?u=${encodeURIComponent("ZetaZone")}`, date: "May 13, 2025", symbol: "WIF", network: "Solana", position: "Long", thesis: "While WIF has had a good run...", totalReturn:"--", totalReturnsLeaderboard: "+7.560%", status: "Closed", likes: 9, commentsCount: 0, shares: 0, marketCap: "$300M", volume: "$160.90M", performance: "+23%", exitDate: "N/A", comments: [] },
+        { id: 8, title: "Short INIT", description: "INIT protocol looks overvalued.", author: "EtaUser", authorAvatar: `https://i.pravatar.cc/20?u=${encodeURIComponent("EtaUser")}`, date: "May 12, 2025", symbol: "INIT", network: "Ethereum", position: "Short", thesis: "INIT's current valuation doesn't match...", totalReturn:"--", totalReturnsLeaderboard: "+3.450%", status: "Active", likes: 3, commentsCount: 0, shares: 0, marketCap: "$80M", volume: "$120.45M", performance: "+170%", exitDate: "N/A", comments: [] },
+        { id: 9, title: "CRV Bounce", description: "Curve Finance recovery.", author: "ThetaTester", authorAvatar: `https://i.pravatar.cc/20?u=${encodeURIComponent("ThetaTester")}`, date: "May 11, 2025", symbol: "CRV", network: "Ethereum", position: "Long", thesis: "Curve Finance is a cornerstone of DeFi...", totalReturn:"--", totalReturnsLeaderboard: "+2.310%", status: "Pending", likes: 6, commentsCount: 0, shares: 0, marketCap: "$500M", volume: "$310.30M", performance: "-25%", exitDate: "N/A", comments: [] },
+        { id: 10, title: "FARTCOIN Gem", description: "This is the one!", author: "IotaInfluencer", authorAvatar: `https://i.pravatar.cc/20?u=${encodeURIComponent("IotaInfluencer")}`, date: "May 10, 2025", symbol: "FARTCOIN", network: "BSC", position: "Long", thesis: "FARTCOIN has revolutionary tokenomics...", totalReturn:"--", totalReturnsLeaderboard: "+1.040%", status: "Active", likes: 22, commentsCount: 0, shares: 0, marketCap: "$1M", volume: "$250.20M", performance: "+20%", exitDate: "N/A", comments: [] }
+    ];
 
     // --- Functions ---
+    function toggleSidebar(sidebar, open) {
+        if (!sidebar) { console.error('[toggleSidebar] Sidebar element is null or undefined.'); return; }
+        const mobileNavToggleButton = document.querySelector('.mobile-nav-toggle');
+        if (open) {
+            sidebar.classList.add('open');
+            if (overlay) overlay.classList.add('active');
+            if (mobileNavToggleButton && window.innerWidth <= 768) mobileNavToggleButton.style.display = 'none';
+        } else {
+            sidebar.classList.remove('open');
+            if (overlay) overlay.classList.remove('active');
+            if (mobileNavToggleButton && window.innerWidth <= 768 && mainNav && !mainNav.classList.contains('active')) {
+                mobileNavToggleButton.style.display = 'flex';
+            }
+        }
+    }
 
-    // ... (toggleSidebar, createIdeaCard (for V1), populateViewSidebar, renderComments, etc. remain mostly the same) ...
-
-    // RENDER IDEAS V1 (Formerly renderIdeas)
     function renderIdeasV1() {
         if (!ideasContainerV1) return;
         ideasContainerV1.innerHTML = '';
-        const ideasToDisplay = ideas.slice().sort((a, b) => b.id - a.id).slice(0, 10); // Show latest 10 for v1
+        const ideasToDisplay = ideas.slice().sort((a, b) => b.id - a.id).slice(0, 10);
         ideasToDisplay.forEach(idea => {
-            const ideaCard = createIdeaCard(idea); // Uses existing createIdeaCard
+            const ideaCard = createIdeaCard(idea);
             if (ideaCard) ideasContainerV1.appendChild(ideaCard);
         });
     }
 
-    // Function to create an idea card for V1 (existing function, ensure it's named createIdeaCard)
-    function createIdeaCard(idea) {
-        // ... This is your existing function that creates the V1 card style ...
-        // It should attach click listener to open viewIdeaSidebar
+    function createIdeaCard(idea) { // This is for V1
         if (!idea) { console.error("[createIdeaCard] Idea object is undefined."); return null; }
         const card = document.createElement('div');
-        card.classList.add('idea-card'); // Existing V1 card class
+        card.classList.add('idea-card');
         card.dataset.ideaId = idea.id;
-        // ... (rest of your existing V1 card HTML generation) ...
-        
-        // Ensure it has the click listener to open the shared sidebar
-        card.addEventListener('click', (e) => {
-            if (e.target.closest('button')) return;
-            populateViewSidebar(idea.id);
-            toggleSidebar(viewIdeaSidebar, true);
-        });
+        let networkIconHtml = '';
+        if (idea.network) {
+            const networkLower = idea.network.toLowerCase();
+            if (networkLower === 'ethereum' || networkLower === 'bsc') networkIconHtml = `<i class="fab fa-ethereum"></i>`;
+            else if (networkLower === 'solana') networkIconHtml = `<i class="fa-brands fa-solana"></i>`;
+            else if (networkLower === 'bitcoin') networkIconHtml = `<i class="fab fa-btc"></i>`;
+        }
+        try {
+            card.innerHTML = `
+                <div class="idea-card-top-section">
+                    <div class="idea-card-main-info">
+                        <h3>${idea.title || 'Untitled Idea'}</h3>
+                        <p class="idea-card-description">${idea.description || 'No description.'}</p>
+                    </div>
+                    <div class="idea-card-meta-island">
+                        <span class="idea-card-date">${idea.date || ''}</span>
+                        <div class="idea-card-island">
+                            <div class="island-left-content">
+                                <div class="island-position-asset">
+                                    <span class="tag ${idea.position ? (idea.position.toLowerCase() === 'long' ? 'tag-long' : 'tag-short') : ''}">${idea.position || ''}</span>
+                                    ${networkIconHtml}
+                                    <span class="tag-asset">${idea.symbol || ''}</span>
+                                </div>
+                                <div class="island-total-return">Total Return <span>${idea.totalReturn || '--'}</span></div>
+                            </div>
+                            <div class="island-status">${idea.status || ''}</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="idea-card-bottom-section">
+                    <span class="idea-card-author">
+                        <img src="${idea.authorAvatar || `https://i.pravatar.cc/20?u=${encodeURIComponent(idea.author || 'anon')}`}" alt="${idea.author || 'anon'}">
+                        ${idea.author || 'Anonymous'}
+                    </span>
+                    <div class="idea-card-actions">
+                        <button title="Like"><i class="far fa-heart"></i> ${idea.likes || 0}</button>
+                        <button title="Comment"><i class="far fa-comment"></i> ${idea.commentsCount || 0}</button>
+                        <button title="Bookmark"><i class="far fa-bookmark"></i></button>
+                    </div>
+                </div>`;
+        } catch (error) { console.error(`[createIdeaCard] Error for ${idea.title || `ID: ${idea.id}`}:`, error, idea); return card; }
+        card.addEventListener('click', (e) => { if (e.target.closest('button')) return; populateViewSidebar(idea.id); toggleSidebar(viewIdeaSidebar, true); });
         return card;
     }
 
-
-    // PLACEHOLDER/NEW: RENDER IDEAS V2
     function renderIdeasV2() {
         if (!ideasContainerV2) return;
         ideasContainerV2.innerHTML = '';
-        // For now, let's render all ideas with a new card style
         ideas.forEach(idea => {
-            const ideaCardV2 = createIdeaCardV2(idea); // New function for V2 cards
+            const ideaCardV2 = createIdeaCardV2(idea);
             if (ideaCardV2) ideasContainerV2.appendChild(ideaCardV2);
         });
     }
 
-    // PLACEHOLDER/NEW: CREATE IDEA CARD V2
     function createIdeaCardV2(idea) {
         if (!idea) { console.error("[createIdeaCardV2] Idea object is undefined."); return null; }
         const card = document.createElement('div');
-        card.classList.add('idea-card-v2'); // New class for V2 cards
+        card.classList.add('idea-card-v2');
         card.dataset.ideaId = idea.id;
-
-        // Based on input_file_0.png for V2 card structure
-        // This will be more detailed when we add CSS
         let symbolIconHtml = '';
-         if (idea.network) {
+        if (idea.network) {
             const networkLower = idea.network.toLowerCase();
             if (networkLower === 'ethereum' || networkLower === 'bsc') symbolIconHtml = `<i class="fab fa-ethereum"></i>`;
             else if (networkLower === 'solana') symbolIconHtml = `<i class="fa-brands fa-solana"></i>`;
             else if (networkLower === 'bitcoin') symbolIconHtml = `<i class="fab fa-btc"></i>`;
         }
+        const returnOrPerf = idea.totalReturnsLeaderboard || idea.performance || '--';
+        const returnClass = (returnOrPerf.startsWith('+') || parseFloat(returnOrPerf.replace('%','')) > 0) ? 'positive' : (returnOrPerf.startsWith('-') || parseFloat(returnOrPerf.replace('%','')) < 0) ? 'negative' : '';
 
         card.innerHTML = `
             <div class="idea-card-v2-header">
                 <h3 class="idea-card-v2-title">${idea.title || 'Untitled Idea'}</h3>
                 <span class="idea-card-v2-date">${idea.date || ''}</span>
             </div>
-            <p class="idea-card-v2-description">${idea.description ? idea.description.substring(0,100) + (idea.description.length > 100 ? '...' : '') : 'No description.'}</p>
+            <p class="idea-card-v2-description">${idea.description ? idea.description.substring(0,120) + (idea.description.length > 120 ? '...' : '') : 'No description.'}</p>
             <div class="idea-card-v2-main-content">
                 <div class="idea-card-v2-details-island">
                     <span class="tag ${idea.position ? (idea.position.toLowerCase() === 'long' ? 'tag-long' : 'tag-short') : ''}">${idea.position || ''}</span>
                     ${symbolIconHtml}
                     <span class="idea-card-v2-symbol">${idea.symbol || ''}</span>
-                    <span class="idea-card-v2-return">${idea.totalReturnsLeaderboard || idea.performance || '--'}</span> {/* Using leaderboard return or performance */}
+                    <span class="idea-card-v2-return ${returnClass}">${returnOrPerf}</span>
                 </div>
                 <span class="idea-card-v2-status ${idea.status ? idea.status.toLowerCase() : ''}">${idea.status || ''}</span>
             </div>
@@ -102,73 +160,16 @@ document.addEventListener('DOMContentLoaded', () => {
                     <button><i class="far fa-comment"></i> ${idea.commentsCount || 0}</button>
                     <button><i class="far fa-bookmark"></i></button>
                 </div>
-            </div>
-        `;
-
-        // Add click listener to open the same viewIdeaSidebar
-        card.addEventListener('click', (e) => {
-            if (e.target.closest('button')) return; // Ignore clicks on action buttons within card
-            populateViewSidebar(idea.id); // Reuses the existing sidebar population logic
-            toggleSidebar(viewIdeaSidebar, true);
-        });
+            </div>`;
+        card.addEventListener('click', (e) => { if (e.target.closest('button')) return; populateViewSidebar(idea.id); toggleSidebar(viewIdeaSidebar, true); });
         return card;
     }
-
-    // ... (renderLeaderboard and other functions remain the same) ...
-    function renderLeaderboard() { /* ... Your existing leaderboard rendering code ... */ }
-
-    // UPDATE setActiveTab
-    function setActiveTab(targetTab) {
-        if (!subNavLinks || subNavLinks.length === 0) return;
-        subNavLinks.forEach(link => {
-            link.classList.remove('active');
-            if (link.dataset.tab === targetTab) link.classList.add('active');
-        });
-
-        const pageTitleElement = document.querySelector('.feature-header h1');
-
-        // Hide all content containers first
-        if (ideasContainerV1) ideasContainerV1.style.display = 'none';
-        if (ideasContainerV2) ideasContainerV2.style.display = 'none';
-        if (leaderboardContainer) leaderboardContainer.style.display = 'none';
-        if (filtersBtn) filtersBtn.style.display = 'none'; // Hide filters button by default
-
-        if (targetTab === 'ideas-v1') {
-            if (ideasContainerV1) ideasContainerV1.style.display = 'flex'; // Or 'block' based on its CSS
-            if (pageTitleElement) pageTitleElement.textContent = 'Untitled Shill Feature (v1)';
-            renderIdeasV1();
-        } else if (targetTab === 'ideas-v2') {
-            if (ideasContainerV2) ideasContainerV2.style.display = 'grid'; // For grid layout of V2 cards
-            if (pageTitleElement) pageTitleElement.textContent = 'Untitled Shill Feature (v2)';
-            renderIdeasV2();
-        } else if (targetTab === 'leaderboard') {
-            if (leaderboardContainer) leaderboardContainer.style.display = 'block';
-            if (filtersBtn) filtersBtn.style.display = 'inline-flex'; // Show filters button for leaderboard
-            if (pageTitleElement) pageTitleElement.textContent = 'Leaderboard'; // Or 'Untitled Shill Feature'
-            renderLeaderboard();
-        }
-         // Hide filter panel when switching tabs (except potentially if staying on leaderboard)
-        if (filterPanel && targetTab !== 'leaderboard') {
-            filterPanel.style.display = 'none';
-        }
-    }
-
-    // --- Initial Page Load ---
-    // Rename renderIdeas to renderIdeasV1 if you haven't already
-    // Ensure createIdeaCard is the V1 card creation function.
-    if (submitIdeaForm) { /* ... your existing submitIdeaForm listener ... */
-        // When submitting a new idea, you might want to refresh both v1 and v2 if they are active
-        // or just the currently active one.
-        // For simplicity, the existing logic in submitIdeaForm that calls renderIdeas()
-        // should be updated to call renderIdeasV1() if that's the new name.
-        // And if ideasContainerV2 is active, call renderIdeasV2().
-    }
     
-    // Update the submit handler to refresh the correct view
+    // IMPORTANT: Ensure submitIdeaForm is declared before this event listener is attached.
+    // const submitIdeaForm = document.getElementById('submitIdeaForm'); // Should be at the top with other selections
     if (submitIdeaForm) {
         submitIdeaForm.addEventListener('submit', function (event) {
             event.preventDefault();
-            // ... (your existing code to create newIdea object) ...
             const formData = new FormData(this);
             const currentAuthorName = "YouNotAnil#23";
             const newIdea = {
@@ -182,16 +183,15 @@ document.addEventListener('DOMContentLoaded', () => {
                 marketCap: "N/A", volume: "N/A", performance: "N/A", exitDate: "TBD", comments: []
             };
             ideas.unshift(newIdea);
-
-            // Refresh the currently active ideas tab or leaderboard
             const activeSubNav = document.querySelector('.sub-nav-link.active');
             if (activeSubNav) {
                 const currentTab = activeSubNav.dataset.tab;
                 if (currentTab === 'ideas-v1') renderIdeasV1();
                 else if (currentTab === 'ideas-v2') renderIdeasV2();
                 else if (currentTab === 'leaderboard') renderLeaderboard();
+            } else { // Default to refreshing v1 if no tab is somehow active
+                renderIdeasV1();
             }
-            
             toggleSidebar(submitIdeaSidebar, false);
             this.reset();
             if (positionButtons.length > 0) {
@@ -200,8 +200,220 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (hiddenPositionInput) hiddenPositionInput.value = positionButtons[0].dataset.value;
             }
         });
+    } else {
+        console.error("Submit Idea Form not found, event listener not attached.");
     }
 
 
-    setActiveTab('ideas-v1'); // Default to 'Ideas v1' tab
+    function populateViewSidebar(ideaId) {
+        try {
+            const idea = ideas.find(i => i.id == ideaId);
+            if (!idea) { console.error(`[populateViewSidebar] Idea not found for ID: ${ideaId}`); return; }
+            if (!viewIdeaSidebar) { console.error("View idea sidebar not found"); return; }
+            viewIdeaSidebar.querySelector('#viewIdeaTitle').textContent = idea.title;
+            viewIdeaSidebar.querySelector('#viewIdeaUserDate').textContent = `${idea.author || 'Anonymous'} • ${idea.date}`;
+            const posTag = viewIdeaSidebar.querySelector('#viewIdeaPosition');
+            posTag.textContent = idea.position || 'N/A';
+            posTag.className = `tag ${idea.position ? (idea.position.toLowerCase() === 'long' ? 'tag-long' : 'tag-short') : ''}`;
+            viewIdeaSidebar.querySelector('#viewIdeaSymbolDisplay').textContent = idea.symbol;
+            viewIdeaSidebar.querySelector('#viewIdeaTotalReturn').innerHTML = idea.totalReturn || '--';
+            viewIdeaSidebar.querySelector('#viewIdeaStatus').textContent = idea.status;
+            viewIdeaSidebar.querySelector('#viewIdeaLikes').textContent = idea.likes || 0;
+            viewIdeaSidebar.querySelector('#viewIdeaCommentsCount').textContent = idea.commentsCount || 0;
+            viewIdeaSidebar.querySelector('#viewIdeaShares').textContent = idea.shares || 0;
+            viewIdeaSidebar.querySelector('#viewInfoSymbol').textContent = idea.symbol;
+            viewIdeaSidebar.querySelector('#viewInfoNetwork').textContent = idea.network || "N/A";
+            viewIdeaSidebar.querySelector('#viewInfoMarketCap').textContent = idea.marketCap || "N/A";
+            viewIdeaSidebar.querySelector('#viewInfoVolume').textContent = idea.volume || "N/A";
+            viewIdeaSidebar.querySelector('#viewInfoContract').textContent = idea.contractAddress || "N/A";
+            const perfEl = viewIdeaSidebar.querySelector('#viewInfoPerformance');
+            perfEl.textContent = idea.performance || "N/A";
+            perfEl.classList.remove('positive-perf', 'negative-perf');
+            if (idea.performance && idea.performance.startsWith('+')) perfEl.classList.add('positive-perf');
+            if (idea.performance && idea.performance.startsWith('-')) perfEl.classList.add('negative-perf');
+            viewIdeaSidebar.querySelector('#viewIdeaThesisText').textContent = idea.thesis || '';
+            viewIdeaSidebar.querySelector('#viewIdeaExitDate').textContent = idea.exitDate || "N/A";
+            const commentSection = viewIdeaSidebar.querySelector('.comments-section');
+            if (commentSection) commentSection.dataset.currentIdeaId = idea.id;
+            renderComments(idea.id);
+        } catch (error) { console.error(`[populateViewSidebar] Error for ID ${ideaId}:`, error); }
+    }
+
+    function renderComments(ideaId) {
+        const idea = ideas.find(i => i.id == ideaId);
+        const commentList = document.getElementById('commentList');
+        if (!commentList) return;
+        commentList.innerHTML = '';
+        if (idea && idea.comments) {
+            idea.comments.forEach(comment => {
+                const commentDiv = document.createElement('div');
+                commentDiv.classList.add('comment');
+                const avatarSrc = comment.userAvatar || `https://i.pravatar.cc/30?u=${encodeURIComponent(comment.author || 'anon')}`;
+                commentDiv.innerHTML = `
+                    <img src="${avatarSrc}" alt="User Avatar" class="user-avatar-comment">
+                    <div class="comment-content">
+                        <div class="comment-author">${comment.author || ''} <span class="comment-username">${comment.username || ''}</span> <span class="comment-time">${comment.time || ''}</span></div>
+                        <div class="comment-text">${comment.text || ''}</div>
+                    </div>`;
+                commentList.appendChild(commentDiv);
+            });
+        }
+        const countEl = document.getElementById('viewIdeaCommentsCount');
+        if (countEl) countEl.textContent = idea && idea.comments ? idea.comments.length : 0;
+        updateCardCommentCount(ideaId, idea && idea.comments ? idea.comments.length : 0);
+    }
+
+    function updateCardCommentCount(ideaId, count) {
+        if (!ideasContainerV1) return; // Check V1 container as an example
+        const card = ideasContainerV1.querySelector(`.idea-card[data-idea-id='${ideaId}']`); // V1 card
+        // Could also check/update V2 card if needed, or make this function more generic
+        if (card) {
+            const commentCountElement = card.querySelector('.fa-comment');
+            if (commentCountElement && commentCountElement.nextSibling) {
+                 commentCountElement.nextSibling.textContent = ` ${count}`;
+            }
+            const ideaInArray = ideas.find(i => i.id == ideaId);
+            if(ideaInArray) ideaInArray.commentsCount = count;
+        }
+    }
+
+    const sendCommentBtn = document.getElementById('sendCommentBtn');
+    const newCommentText = document.getElementById('newCommentText');
+    if (sendCommentBtn && newCommentText) {
+        sendCommentBtn.addEventListener('click', () => {
+            const commentTextVal = newCommentText.value.trim();
+            if (!commentTextVal) return;
+            const commentSection = document.querySelector('#viewIdeaSidebar .comments-section');
+            if (!commentSection) return;
+            const currentIdeaId = commentSection.dataset.currentIdeaId;
+            const idea = ideas.find(i => i.id == currentIdeaId);
+            if (idea) {
+                const newComment = {
+                    userAvatar: `https://i.pravatar.cc/30?u=${encodeURIComponent("CurrentUser" + Date.now())}`,
+                    author: "CurrentUser", username: "@current", time: "Just now", text: commentTextVal
+                };
+                if (!idea.comments) idea.comments = [];
+                idea.comments.push(newComment);
+                idea.commentsCount = idea.comments.length;
+                renderComments(currentIdeaId);
+                newCommentText.value = '';
+            }
+        });
+    }
+
+    if (submitIdeaBtnPage) submitIdeaBtnPage.addEventListener('click', () => toggleSidebar(submitIdeaSidebar, true));
+    if (closeSubmitSidebarBtn) closeSubmitSidebarBtn.addEventListener('click', () => toggleSidebar(submitIdeaSidebar, false));
+    if (closeViewSidebarBtn) closeViewSidebarBtn.addEventListener('click', () => toggleSidebar(viewIdeaSidebar, false));
+    if (overlay) overlay.addEventListener('click', () => {
+        toggleSidebar(submitIdeaSidebar, false);
+        toggleSidebar(viewIdeaSidebar, false);
+        if (mainNav && mainNav.classList.contains('active')) { // Also close mobile nav if open
+            mainNav.classList.remove('active');
+            if (mobileNavToggle) mobileNavToggle.setAttribute('aria-expanded', 'false');
+            overlay.classList.remove('mobile-nav-active');
+        }
+    });
+    if (positionButtons.length > 0) {
+        positionButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                positionButtons.forEach(btn => btn.classList.remove('active'));
+                button.classList.add('active');
+                if (hiddenPositionInput) hiddenPositionInput.value = button.dataset.value;
+            });
+        });
+    }
+
+    function renderLeaderboard() {
+        if (!leaderboardBody) { console.error("Leaderboard body (tbody) not found!"); return; }
+        leaderboardBody.innerHTML = '';
+        const sortedIdeas = [...ideas];
+        sortedIdeas.sort((a, b) => {
+            const returnA = parseFloat(a.totalReturnsLeaderboard?.replace(/[+%]/g, '')) || 0;
+            const returnB = parseFloat(b.totalReturnsLeaderboard?.replace(/[+%]/g, '')) || 0;
+            return returnB - returnA;
+        });
+        sortedIdeas.forEach((idea, index) => {
+            const rank = index + 1;
+            const row = document.createElement('tr');
+            row.dataset.ideaId = idea.id;
+            let symbolIconHtml = '';
+            if (idea.network) { /* ... icon logic ... */ }
+            const performanceRaw = parseFloat(idea.performance?.replace(/[+%]/g, ''));
+            const performanceClass = isNaN(performanceRaw) ? '' : (performanceRaw >= 0 ? 'positive' : 'negative');
+            const statusClass = idea.status ? idea.status.toLowerCase() : '';
+            row.innerHTML = `
+                <td class="rank-cell">${rank}</td>
+                <td class="user-symbol-cell">
+                    <div class="user-info">
+                        <img src="${idea.authorAvatar || `https://i.pravatar.cc/24?u=${encodeURIComponent(idea.author || 'anon')}`}" alt="${idea.author || 'anon'}" class="leaderboard-user-avatar">
+                        <span class="leaderboard-username">${idea.author || 'Anonymous'}</span>
+                    </div>
+                    <div class="symbol-info">${symbolIconHtml}<span class="leaderboard-symbol-text">${idea.symbol || 'N/A'}</span></div>
+                </td>
+                <td class="total-returns-cell">${idea.totalReturnsLeaderboard || 'N/A'}</td>
+                <td class="position-cell"><span class="tag ${idea.position ? (idea.position.toLowerCase() === 'long' ? 'tag-long' : 'tag-short') : ''}">${idea.position || 'N/A'}</span></td>
+                <td class="performance-cell ${performanceClass}">${idea.performance || 'N/A'}</td>
+                <td class="volume-cell">${idea.volume || 'N/A'}</td>
+                <td class="status-cell ${statusClass}">${idea.status || 'N/A'}</td>
+            `;
+            row.addEventListener('click', () => { populateViewSidebar(idea.id); toggleSidebar(viewIdeaSidebar, true); });
+            leaderboardBody.appendChild(row);
+        });
+    }
+
+    function setActiveTab(targetTab) {
+        if (!subNavLinks || subNavLinks.length === 0) return;
+        subNavLinks.forEach(link => {
+            link.classList.remove('active');
+            if (link.dataset.tab === targetTab) link.classList.add('active');
+        });
+        const pageTitleElement = document.querySelector('.feature-header h1');
+        if (ideasContainerV1) ideasContainerV1.style.display = 'none';
+        if (ideasContainerV2) ideasContainerV2.style.display = 'none';
+        if (leaderboardContainer) leaderboardContainer.style.display = 'none';
+        if (filtersBtn) filtersBtn.style.display = 'none';
+
+        if (targetTab === 'ideas-v1') {
+            if (ideasContainerV1) ideasContainerV1.style.display = 'flex';
+            if (pageTitleElement) pageTitleElement.textContent = 'Untitled Shill Feature (v1)';
+            renderIdeasV1();
+        } else if (targetTab === 'ideas-v2') {
+            if (ideasContainerV2) ideasContainerV2.style.display = 'grid';
+            if (pageTitleElement) pageTitleElement.textContent = 'Untitled Shill Feature (v2)';
+            renderIdeasV2();
+        } else if (targetTab === 'leaderboard') {
+            if (leaderboardContainer) leaderboardContainer.style.display = 'block';
+            if (filtersBtn) filtersBtn.style.display = 'inline-flex';
+            if (pageTitleElement) pageTitleElement.textContent = 'Leaderboard';
+            renderLeaderboard();
+        }
+        if (filterPanel && targetTab !== 'leaderboard') { filterPanel.style.display = 'none'; }
+    }
+
+    if (subNavLinks.length > 0) {
+        subNavLinks.forEach(link => {
+            link.addEventListener('click', (event) => { event.preventDefault(); setActiveTab(event.target.dataset.tab); });
+        });
+    }
+    if (filtersBtn) {
+        filtersBtn.addEventListener('click', () => {
+            if (filterPanel) filterPanel.style.display = (filterPanel.style.display === 'none' || filterPanel.style.display === '') ? 'block' : 'none';
+        });
+    }
+    if (mobileNavToggle && mainNav) {
+        mobileNavToggle.addEventListener('click', () => {
+            const isNavOpen = mainNav.classList.toggle('active');
+            mobileNavToggle.setAttribute('aria-expanded', isNavOpen);
+            if (overlay) overlay.classList.toggle('mobile-nav-active', isNavOpen);
+            if (isNavOpen) { // When opening mobile nav, hide other sidebars
+                toggleSidebar(submitIdeaSidebar, false);
+                toggleSidebar(viewIdeaSidebar, false);
+            }
+        });
+    }
+    if (mobileSearchToggle) {
+        mobileSearchToggle.addEventListener('click', () => { alert('Mobile search to be implemented!'); });
+    }
+
+    setActiveTab('ideas-v1');
 });

@@ -11,7 +11,9 @@
     <div class="app-container">
         <!-- Header -->
         <header class="app-header">
-            <!-- ... (your existing header code remains the same) ... -->
+            <button class="mobile-nav-toggle" aria-label="Toggle navigation" aria-expanded="false">
+                <i class="fas fa-bars"></i>
+            </button>
             <div class="logo-container">
                 <img src="Logo.svg" alt="Logo" class="header-logo">
             </div>
@@ -40,7 +42,7 @@
         <!-- Main Content -->
         <main class="main-content">
             <div class="feature-header">
-                <h1>Untitled Shill Feature</h1> <!-- Will be dynamically updated by JS -->
+                <h1>Untitled Shill Feature</h1>
                 <div class="feature-header-actions">
                     <button id="submitIdeaBtnPage" class="btn btn-primary">Submit Idea</button>
                     <button id="filtersBtn" class="btn btn-secondary btn-filter" style="display: none;">
@@ -50,7 +52,23 @@
             </div>
 
             <div class="filter-panel" id="filterPanel" style="display: none;">
-                <!-- ... (your existing filter panel code remains the same) ... -->
+                <div class="filter-group">
+                    <label class="filter-label">Status</label>
+                    <div class="filter-options">
+                        <label><input type="radio" name="statusFilter" value="active" checked> Active</label>
+                        <label><input type="radio" name="statusFilter" value="closed"> Closed</label>
+                    </div>
+                </div>
+                <div class="filter-group">
+                    <label class="filter-label">Date Range</label>
+                    <div class="filter-options">
+                        <label><input type="radio" name="dateFilter" value="today" checked> Today</label>
+                        <label><input type="radio" name="dateFilter" value="yesterday"> Yesterday</label>
+                        <label><input type="radio" name="dateFilter" value="this_week"> This week</label>
+                        <label><input type="radio" name="dateFilter" value="this_month"> This month</label>
+                        <label><input type="radio" name="dateFilter" value="custom"> Custom</label>
+                    </div>
+                </div>
             </div>
 
             <nav class="sub-nav">
@@ -59,7 +77,7 @@
                 <a href="#" class="sub-nav-link" data-tab="leaderboard">Leaderboard</a>
             </nav>
 
-            <div class="ideas-list-container" id="ideasContainerV1"> <!-- Renamed for clarity -->
+            <div class="ideas-list-container" id="ideasContainerV1">
                 <!-- Ideas v1 populated by JS -->
             </div>
 
@@ -68,87 +86,115 @@
             </div>
 
             <div class="leaderboard-container" id="leaderboardContainer" style="display: none;">
-                <!-- ... (your existing leaderboard table code remains the same) ... -->
+                <div class="leaderboard-table-wrapper">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th class="align-center">RANK</th>
+                                <th class="th-user-symbol">USER</th>
+                                <th class="align-right">TOTAL RETURNS</th>
+                                <th class="align-center">POSITION</th>
+                                <th class="align-right">PERFORMANCE <span class="timeframe">24H</span></th>
+                                <th class="align-right">VOLUME <span class="timeframe">24H</span></th>
+                                <th class="align-right">STATUS</th>
+                            </tr>
+                        </thead>
+                        <tbody id="leaderboardBody"></tbody>
+                    </table>
+                </div>
             </div>
         </main>
 
-        <!-- Sidebars (Submit Idea & View Idea Details) -->
-        <!-- ... (your existing sidebar HTML code remains the same) ... -->
-        <!-- Sidebar for Viewing Idea Details -->
+        <aside id="submitIdeaSidebar" class="sidebar">
+            <div class="sidebar-header">
+                <h2>Submit Idea</h2>
+                <button id="closeSubmitSidebarBtn" class="close-btn">×</button>
+            </div>
+            <div class="sidebar-content">
+                <form id="submitIdeaForm">
+                    <div class="form-group">
+                        <label for="symbol">Symbol*</label>
+                        <input type="text" id="symbol" name="symbol" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="network">Network</label>
+                        <select id="network" name="network">
+                            <option value="Ethereum">Ethereum</option> <option value="Solana">Solana</option>
+                            <option value="Bitcoin">Bitcoin</option> <option value="BSC">Binance Smart Chain</option>
+                            <option value="Polygon">Polygon</option> <option value="Celestia">Celestia</option>
+                            <option value="Kadena">Kadena</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="contractAddress">Contract Address</label>
+                        <input type="text" id="contractAddress" name="contractAddress" placeholder="Help people find this asset">
+                    </div>
+                    <div class="form-group">
+                        <label>Position*</label>
+                        <div class="position-options">
+                            <button type="button" class="position-btn active" data-value="Long">Long</button>
+                            <button type="button" class="position-btn" data-value="Short">Short</button>
+                            <input type="hidden" id="position" name="position" value="Long" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="thesis">Thesis*</label>
+                        <textarea id="thesis" name="thesis" rows="5" placeholder="What's your thesis behind this trade idea?" required></textarea>
+                    </div>
+                    <div class="form-group checkbox-group">
+                        <input type="checkbox" id="makePublic" name="makePublic" checked>
+                        <label for="makePublic" class="checkbox-label">Making your idea public lets others view, like, bookmark or comment on it. It can't be modified or deleted once submitted.</label>
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-submit-form">Submit</button>
+                </form>
+            </div>
+        </aside>
+
         <aside id="viewIdeaSidebar" class="sidebar">
             <div class="sidebar-header">
-                <h2 id="viewIdeaTitle">Buy HYPEUSD</h2> <!-- Dynamically updated -->
-                <div class="idea-meta-top">
-                    <span id="viewIdeaUserDate">NotAnil#23 • May 19, 2025</span> <!-- Dynamically updated -->
-                </div>
+                <h2 id="viewIdeaTitle"></h2>
+                <div class="idea-meta-top"><span id="viewIdeaUserDate"></span></div>
                 <button id="closeViewSidebarBtn" class="close-btn">×</button>
             </div>
-            <div class="sidebar-content"> <!-- <<< THIS IS THE CONTAINER YOU'RE LOOKING FOR -->
-
-                <!-- NEW: Chart Placeholder and Timeframe Selectors -->
+            <div class="sidebar-content">
                 <div class="idea-chart-placeholder">Chart Area Placeholder</div>
                 <div class="chart-timeframe-selectors">
-                    <button class="active">1H</button>
-                    <button>1D</button>
-                    <button>1W</button>
-                    <button>1M</button>
-                    <button>ALL</button>
-                    <button>00</button>
+                    <button class="active">1H</button><button>1D</button><button>1W</button>
+                    <button>1M</button><button>ALL</button><button>00</button>
                 </div>
-                <!-- END NEW -->
-
                 <div class="idea-details-header">
                     <div class="tags">
-                        <span class="tag tag-long" id="viewIdeaPosition">Long</span>
-                        <span class="tag tag-asset" id="viewIdeaSymbolDisplay">HYPE</span>
+                        <span class="tag" id="viewIdeaPosition"></span>
+                        <span class="tag tag-asset" id="viewIdeaSymbolDisplay"></span>
                     </div>
-                    <div class="total-return">
-                        Total Return
-                        <span id="viewIdeaTotalReturn">--</span>
-                    </div>
-                    <div class="status" id="viewIdeaStatus">Pending</div>
+                    <div class="total-return">Total Return<span id="viewIdeaTotalReturn"></span></div>
+                    <div class="status" id="viewIdeaStatus"></div>
                 </div>
-
                 <div class="idea-interactions">
-                    <button class="interaction-btn"><i class="far fa-heart"></i> <span id="viewIdeaLikes">4</span></button>
-                    <button class="interaction-btn"><i class="far fa-comment"></i> <span id="viewIdeaCommentsCount">1</span></button>
-                    <button class="interaction-btn"><i class="fas fa-bookmark"></i> <span id="viewIdeaShares">1</span></button>
-                    <!-- Add Ellipsis and Share buttons if desired for V2 view -->
+                    <button class="interaction-btn"><i class="far fa-heart"></i> <span id="viewIdeaLikes"></span></button>
+                    <button class="interaction-btn"><i class="far fa-comment"></i> <span id="viewIdeaCommentsCount"></span></button>
+                    <button class="interaction-btn"><i class="fas fa-bookmark"></i> <span id="viewIdeaShares"></span></button>
                     <button class="interaction-btn" title="More options"><i class="fas fa-ellipsis-h"></i></button>
                     <button class="interaction-btn" title="Share"><i class="fas fa-share-alt"></i></button>
                 </div>
-
                 <section class="info-section">
-                    <div class="info-section-header"> <!-- Optional wrapper for title and toggle -->
+                    <div class="info-section-header">
                         <h3>INFO</h3>
-                        <!-- NEW: Info Time Toggle -->
                         <div class="info-time-toggle">
-                            <button class="active">24h</button>
-                            <button>1d</button>
-                            <button>7d</button>
+                            <button class="active">24h</button><button>1d</button><button>7d</button>
                         </div>
-                        <!-- END NEW -->
                     </div>
                     <div class="info-grid">
-                        <div><span>Symbol</span><strong id="viewInfoSymbol">HYPE</strong></div>
-                        <div><span>Network</span><strong id="viewInfoNetwork">HyperEVM</strong></div>
-                        <div><span>Market Cap</span><strong id="viewInfoMarketCap">$2.3B</strong></div>
-                        <div><span>Volume</span><strong id="viewInfoVolume">$232.12B</strong></div>
-                        <div><span>Contract Add.</span><strong id="viewInfoContract" class="contract-address">0x2948...21238</strong></div>
-                        <div><span>Performance</span><strong id="viewInfoPerformance" class="positive-perf">+24%</strong></div>
+                        <div><span>Symbol</span><strong id="viewInfoSymbol"></strong></div>
+                        <div><span>Network</span><strong id="viewInfoNetwork"></strong></div>
+                        <div><span>Market Cap</span><strong id="viewInfoMarketCap"></strong></div>
+                        <div><span>Volume</span><strong id="viewInfoVolume"></strong></div>
+                        <div><span>Contract Add.</span><strong id="viewInfoContract" class="contract-address"></strong></div>
+                        <div><span>Performance</span><strong id="viewInfoPerformance"></strong></div>
                     </div>
                 </section>
-
-                <section class="thesis-section">
-                    <h3>THESIS</h3>
-                    <p id="viewIdeaThesisText">The future of HyperLiquid looks promising as they have secured a strong valuation and further strengthened their community.</p>
-                </section>
-                
-                <section class="exit-date-section">
-                    <h3>Exit Date</h3> <!-- Added H3 for consistency, can be styled as span too -->
-                    <strong id="viewIdeaExitDate">July 24, 2025</strong>
-                </section>
-
+                <section class="thesis-section"><h3>THESIS</h3><p id="viewIdeaThesisText"></p></section>
+                <section class="exit-date-section"><h3>Exit Date</h3><strong id="viewIdeaExitDate"></strong></section>
                 <section class="comments-section">
                     <h3>COMMENTS</h3>
                     <div class="comment-input-area">
@@ -156,21 +202,12 @@
                         <input type="text" placeholder="This is my comment..." id="newCommentText">
                         <button id="sendCommentBtn" class="btn btn-primary">Send</button>
                     </div>
-                    <div class="comment-list" id="commentList">
-                        <!-- Comments rendered by JS -->
-                    </div>
+                    <div class="comment-list" id="commentList"></div>
                 </section>
-
-                <!-- NEW: Disclaimer Footer -->
                 <div class="sidebar-disclaimer">
                     <i class="fas fa-info-circle"></i> Trade ideas presented are for educational purposes only and are not financial advice. Please conduct your own research or consult a financial advisor before making any investment decisions.
                 </div>
-                <!-- END NEW -->
-            </div> <!-- End of .sidebar-content -->
-        </aside>
-        
-        <aside id="viewIdeaSidebar" class="sidebar">
-            <!-- ... view idea details (this will be shared for now) ... -->
+            </div>
         </aside>
         <div class="overlay" id="overlay"></div>
     </div>
