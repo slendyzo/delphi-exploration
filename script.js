@@ -19,7 +19,11 @@ document.addEventListener('DOMContentLoaded', () => {
     const mobileNavToggle = document.querySelector('.mobile-nav-toggle');
     const mainNav = document.querySelector('.main-nav');
     const mobileSearchToggle = document.querySelector('.search-toggle-mobile');
-    const mainContentElement = document.querySelector('.main-content'); // For full-bleed V2
+    const mainContentElement = document.querySelector('.main-content');
+    
+    // Moved sortableHeaders selection here to ensure it's after DOM is loaded
+    // const sortableHeaders = document.querySelectorAll('.leaderboard-container th.sortable'); 
+    // Event listeners for sortable headers will be added after first render of leaderboard
 
 
     // --- Initial Data (Sample Ideas) ---
@@ -35,6 +39,19 @@ document.addEventListener('DOMContentLoaded', () => {
         { id: 9, title: "CRV Bounce", description: "Curve Finance recovery.", author: "ThetaTester", authorAvatar: `https://i.pravatar.cc/20?u=${encodeURIComponent("ThetaTester")}`, date: "May 11, 2025", symbol: "CRV", network: "Ethereum", position: "Long", thesis: "Curve Finance is a cornerstone of DeFi...", totalReturn:"--", totalReturnsLeaderboard: "+2.310%", status: "Pending", likes: 6, commentsCount: 0, shares: 0, marketCap: "$500M", volume: "$310.30M", performance: "-25%", exitDate: "N/A", isLiked: false, comments: [] },
         { id: 10, title: "FARTCOIN Gem", description: "This is the one!", author: "IotaInfluencer", authorAvatar: `https://i.pravatar.cc/20?u=${encodeURIComponent("IotaInfluencer")}`, date: "May 10, 2025", symbol: "FARTCOIN", network: "BSC", position: "Long", thesis: "FARTCOIN has revolutionary tokenomics...", totalReturn:"--", totalReturnsLeaderboard: "+1.040%", status: "Active", likes: 22, commentsCount: 0, shares: 0, marketCap: "$1M", volume: "$250.20M", performance: "+20%", exitDate: "N/A", isLiked: false, comments: [] }
     ];
+
+    let currentSortKey = 'totalReturnsLeaderboard'; 
+    let currentSortOrder = 'desc'; 
+
+    function updateSortArrows() {
+        const headers = document.querySelectorAll('.leaderboard-container th.sortable');
+        headers.forEach(th => {
+            th.classList.remove('sort-asc', 'sort-desc');
+            if (th.dataset.sortKey === currentSortKey) {
+                th.classList.add(currentSortOrder === 'asc' ? 'sort-asc' : 'sort-desc');
+            }
+        });
+    }
 
     // --- Functions ---
     function toggleSidebar(sidebar, open) {
@@ -188,22 +205,20 @@ document.addEventListener('DOMContentLoaded', () => {
         return card;
     }
     
-    function handleLikeButtonClick(buttonElement, ideaId) { // Common like handler
+    function handleLikeButtonClick(buttonElement, ideaId) { 
         const ideaToUpdate = ideas.find(i => i.id == ideaId);
         if (ideaToUpdate) {
             ideaToUpdate.isLiked = !ideaToUpdate.isLiked;
             if (ideaToUpdate.isLiked) ideaToUpdate.likes = (ideaToUpdate.likes || 0) + 1;
             else ideaToUpdate.likes = Math.max(0, (ideaToUpdate.likes || 0) - 1);
 
-            // Update the clicked button (card v1 or v2)
             buttonElement.classList.toggle('liked', ideaToUpdate.isLiked);
             const likeCountSpan = buttonElement.querySelector('.like-count');
             if (likeCountSpan) likeCountSpan.textContent = ideaToUpdate.likes;
             const heartIcon = buttonElement.querySelector('i');
             if (heartIcon) { heartIcon.classList.toggle('far', !ideaToUpdate.isLiked); heartIcon.classList.toggle('fas', ideaToUpdate.isLiked); }
 
-            // Update the other card type if visible
-            if (buttonElement.classList.contains('like-btn-v1') && ideasContainerV2.style.display !== 'none') {
+            if (buttonElement.classList.contains('like-btn-v1') && ideasContainerV2 && ideasContainerV2.style.display !== 'none') {
                 const otherCardButton = ideasContainerV2.querySelector(`.like-btn-v2[data-idea-id="${ideaId}"]`);
                 if (otherCardButton) {
                     otherCardButton.classList.toggle('liked', ideaToUpdate.isLiked);
@@ -211,7 +226,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     const otherIcon = otherCardButton.querySelector('i');
                     if (otherIcon) { otherIcon.classList.toggle('far', !ideaToUpdate.isLiked); otherIcon.classList.toggle('fas', ideaToUpdate.isLiked); }
                 }
-            } else if (buttonElement.classList.contains('like-btn-v2') && ideasContainerV1.style.display !== 'none') {
+            } else if (buttonElement.classList.contains('like-btn-v2') && ideasContainerV1 && ideasContainerV1.style.display !== 'none') {
                 const otherCardButton = ideasContainerV1.querySelector(`.like-btn-v1[data-idea-id="${ideaId}"]`);
                 if (otherCardButton) {
                     otherCardButton.classList.toggle('liked', ideaToUpdate.isLiked);
@@ -221,8 +236,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             }
             
-            // Update sidebar if it's open and showing this idea
-            if (viewIdeaSidebar.classList.contains('open')) {
+            if (viewIdeaSidebar && viewIdeaSidebar.classList.contains('open')) {
                 const currentSidebarIdeaId = viewIdeaSidebar.querySelector('.comments-section')?.dataset.currentIdeaId;
                 if (currentSidebarIdeaId == ideaId) {
                     const likesSpanInSidebar = viewIdeaSidebar.querySelector('#viewIdeaLikes');
@@ -306,21 +320,20 @@ document.addEventListener('DOMContentLoaded', () => {
 
             const sidebarLikeButton = viewIdeaSidebar.querySelector('.like-btn-sidebar');
             if (sidebarLikeButton) {
-                sidebarLikeButton.dataset.ideaId = idea.id; // Set ideaId for the handler
+                sidebarLikeButton.dataset.ideaId = idea.id; 
                 const sidebarHeartIcon = sidebarLikeButton.querySelector('i.fa-heart');
                 if (sidebarHeartIcon) {
                     sidebarHeartIcon.classList.toggle('far', !idea.isLiked);
                     sidebarHeartIcon.classList.toggle('fas', idea.isLiked);
-                    sidebarHeartIcon.style.color = idea.isLiked ? '#007bff' : ''; // Or use a class
+                    sidebarHeartIcon.style.color = idea.isLiked ? '#007bff' : ''; 
                 }
-                sidebarLikeButton.classList.toggle('liked', idea.isLiked); // Add/remove liked class
-                 // Remove old listener before adding new one if this function can be called multiple times for same sidebar view
-                if (sidebarLikeButton.handleLikeClick) { // Check if custom property exists
+                sidebarLikeButton.classList.toggle('liked', idea.isLiked); 
+                if (sidebarLikeButton.handleLikeClick) { 
                     sidebarLikeButton.removeEventListener('click', sidebarLikeButton.handleLikeClick);
                 }
-                sidebarLikeButton.handleLikeClick = function(event) { // Store function reference
+                sidebarLikeButton.handleLikeClick = function(event) { 
                     event.stopPropagation();
-                    handleLikeButtonClick(this, idea.id); // Pass button and ideaId
+                    handleLikeButtonClick(this, idea.id); 
                 };
                 sidebarLikeButton.addEventListener('click', sidebarLikeButton.handleLikeClick);
             }
@@ -395,7 +408,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (!idea.comments) idea.comments = [];
                 idea.comments.push(newComment);
                 idea.commentsCount = idea.comments.length;
-                renderComments(currentIdeaId); // This will also call updateCardCommentCount
+                renderComments(currentIdeaId); 
                 newCommentText.value = '';
             }
         });
@@ -422,49 +435,89 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         });
     }
-
+    
     function renderLeaderboard() {
         if (!leaderboardBody) { console.error("Leaderboard body (tbody) not found!"); return; }
-        leaderboardBody.innerHTML = '';
-        const sortedIdeas = [...ideas];
+        leaderboardBody.innerHTML = ''; 
+    
+        const sortedIdeas = [...ideas]; 
+    
         sortedIdeas.sort((a, b) => {
-            const returnA = parseFloat(a.totalReturnsLeaderboard?.replace(/[+%]/g, '')) || 0;
-            const returnB = parseFloat(b.totalReturnsLeaderboard?.replace(/[+%]/g, '')) || 0;
-            return returnB - returnA;
+            let valA = a[currentSortKey];
+            let valB = b[currentSortKey];
+            if (['totalReturnsLeaderboard', 'performance', 'volume'].includes(currentSortKey)) {
+                 valA = parseFloat(String(valA)?.replace(/[+%M$]/g, '')) || 0; 
+                 valB = parseFloat(String(valB)?.replace(/[+%M$]/g, '')) || 0;
+            } else if (currentSortKey === 'rank') { // Use totalReturnsLeaderboard for rank sort
+                 valA = parseFloat(a.totalReturnsLeaderboard?.replace(/[+%]/g, '')) || 0;
+                 valB = parseFloat(b.totalReturnsLeaderboard?.replace(/[+%]/g, '')) || 0;
+                 // For rank, primary sort is actually on totalReturnsLeaderboard, so use its logic
+                 // if (currentSortOrder === 'asc') return valA - valB; // Lower return = lower rank if asc
+                 // return valB - valA; // Higher return = higher rank if desc (default for rank)
+            }
+             else {
+                valA = String(valA)?.toLowerCase() || '';
+                valB = String(valB)?.toLowerCase() || '';
+            }
+    
+            if (valA < valB) return currentSortOrder === 'asc' ? -1 : 1;
+            if (valA > valB) return currentSortOrder === 'asc' ? 1 : -1;
+            return 0;
         });
+    
         sortedIdeas.forEach((idea, index) => {
-            const rank = index + 1;
+            const rank = index + 1; 
             const row = document.createElement('tr');
             row.dataset.ideaId = idea.id;
-            let symbolIconHtml = '';
-            if (idea.network) { 
-                const networkLower = idea.network.toLowerCase();
-                if (networkLower === 'ethereum' || networkLower === 'bsc') symbolIconHtml = `<i class="fab fa-ethereum leaderboard-symbol-icon"></i>`;
-                else if (networkLower === 'solana') symbolIconHtml = `<i class="fa-brands fa-solana leaderboard-symbol-icon"></i>`;
-                else if (networkLower === 'bitcoin') symbolIconHtml = `<i class="fab fa-btc leaderboard-symbol-icon"></i>`;
-            }
+    
+            const genericSymbolIconHtml = `<i class="fas fa-coins leaderboard-symbol-icon default-symbol-icon"></i>`; 
+            
             const performanceRaw = parseFloat(idea.performance?.replace(/[+%]/g, ''));
             const performanceClass = isNaN(performanceRaw) ? '' : (performanceRaw >= 0 ? 'positive' : 'negative');
-            const statusClass = idea.status ? idea.status.toLowerCase() : '';
+            
+            const totalReturnsRaw = parseFloat(idea.totalReturnsLeaderboard?.replace(/[+%]/g, ''));
+            const totalReturnsClass = isNaN(totalReturnsRaw) ? '' : (totalReturnsRaw >= 0 ? 'positive' : 'negative');
+    
+            let rankCellClass = "rank-cell";
+            // Apply top-rank class only if sorting by default (Total Returns DESC)
+            if (currentSortKey === 'totalReturnsLeaderboard' && currentSortOrder === 'desc' && rank <= 3) {
+                rankCellClass += " top-rank";
+            }
+    
             row.innerHTML = `
-                <td class="rank-cell">${rank}</td>
-                <td class="user-symbol-cell">
-                    <div class="user-info">
-                        <img src="${idea.authorAvatar || `https://i.pravatar.cc/24?u=${encodeURIComponent(idea.author || 'anon')}`}" alt="${idea.author || 'anon'}" class="leaderboard-user-avatar">
-                        <span class="leaderboard-username">${idea.author || 'Anonymous'}</span>
-                    </div>
-                    <div class="symbol-info">${symbolIconHtml}<span class="leaderboard-symbol-text">${idea.symbol || 'N/A'}</span></div>
+                <td class="${rankCellClass}"><span>${rank}</span></td>
+                <td class="user-cell">
+                    <img src="${idea.authorAvatar || `https://i.pravatar.cc/24?u=${encodeURIComponent(idea.author || 'anon')}`}" alt="${idea.author || 'anon'}" class="leaderboard-user-avatar">
+                    <span class="leaderboard-username">${idea.author || 'Anonymous'}</span>
                 </td>
-                <td class="total-returns-cell">${idea.totalReturnsLeaderboard || 'N/A'}</td>
-                <td class="position-cell"><span class="tag ${idea.position ? (idea.position.toLowerCase() === 'long' ? 'tag-long' : 'tag-short') : ''}">${idea.position || 'N/A'}</span></td>
-                <td class="performance-cell ${performanceClass}">${idea.performance || 'N/A'}</td>
+                <td class="symbol-cell-v2">
+                    <div class="symbol-chip">
+                        ${genericSymbolIconHtml}
+                        <span class="leaderboard-symbol-text">${idea.symbol || 'N/A'}</span>
+                    </div>
+                </td>
+                <td class="total-returns-cell ${totalReturnsClass}">
+                    ${idea.totalReturnsLeaderboard || 'N/A'}
+                </td>
+                <td class="position-cell">
+                    <span class="tag ${idea.position ? (idea.position.toLowerCase() === 'long' ? 'tag-long' : 'tag-short') : ''}">${idea.position || 'N/A'}</span>
+                </td>
+                <td class="performance-cell ${performanceClass}">
+                    ${idea.performance || 'N/A'}
+                </td>
                 <td class="volume-cell">${idea.volume || 'N/A'}</td>
-                <td class="status-cell ${statusClass}">${idea.status || 'N/A'}</td>
+                <td class="status-cell">${idea.status || 'N/A'}</td> <!-- Removed statusClass for default text color -->
             `;
-            row.addEventListener('click', () => { populateViewSidebar(idea.id); toggleSidebar(viewIdeaSidebar, true); });
+    
+            row.addEventListener('click', () => { 
+                populateViewSidebar(idea.id); 
+                toggleSidebar(viewIdeaSidebar, true); 
+            });
             leaderboardBody.appendChild(row);
         });
+        updateSortArrows(); // Update arrows after rendering
     }
+
 
     function setActiveTab(targetTab) {
         if (!subNavLinks || subNavLinks.length === 0) return;
@@ -496,10 +549,33 @@ document.addEventListener('DOMContentLoaded', () => {
             if (leaderboardContainer) leaderboardContainer.style.display = 'block';
             if (filtersBtn) filtersBtn.style.display = 'inline-flex';
             if (pageTitleElement) pageTitleElement.textContent = 'Leaderboard';
+            currentSortKey = 'totalReturnsLeaderboard'; // Reset to default when tab is opened
+            currentSortOrder = 'desc';
             renderLeaderboard();
         }
         if (filterPanel && targetTab !== 'leaderboard') { filterPanel.style.display = 'none'; }
     }
+
+    // Setup for sortable headers (moved after renderLeaderboard is defined)
+    const sortableHeaders = document.querySelectorAll('.leaderboard-container th.sortable');
+    if (sortableHeaders.length > 0) {
+        sortableHeaders.forEach(header => {
+            header.addEventListener('click', () => {
+                const sortKey = header.dataset.sortKey;
+                if (currentSortKey === sortKey) {
+                    currentSortOrder = currentSortOrder === 'asc' ? 'desc' : 'asc';
+                } else {
+                    currentSortKey = sortKey;
+                    // Default sort order for new columns
+                    currentSortOrder = (['author', 'symbol', 'position', 'status'].includes(sortKey)) ? 'asc' : 'desc';
+                }
+                renderLeaderboard();
+            });
+        });
+    } else {
+        console.warn("No sortable headers found for leaderboard.");
+    }
+
 
     if (subNavLinks.length > 0) {
         subNavLinks.forEach(link => {

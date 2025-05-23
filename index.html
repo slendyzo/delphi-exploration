@@ -45,10 +45,18 @@
                 <h1>Untitled Shill Feature</h1>
                 <div class="feature-header-actions">
                     <button id="submitIdeaBtnPage" class="btn btn-primary">Submit Idea</button>
-                    <button id="filtersBtn" class="btn btn-secondary btn-filter" style="display: none;">
-                        <i class="fas fa-filter"></i> Filters
-                    </button>
                 </div>
+            </div>
+
+            <div class="page-controls"> 
+                <nav class="sub-nav">
+                    <a href="#" class="sub-nav-link active" data-tab="ideas-v1">Ideas v1</a>
+                    <a href="#" class="sub-nav-link" data-tab="ideas-v2">Ideas v2</a>
+                    <a href="#" class="sub-nav-link" data-tab="leaderboard">Leaderboard</a>
+                </nav>
+                <button id="filtersBtn" class="btn btn-filter" style="display: none;">
+                    <i class="fas fa-filter"></i> Filters
+                </button>
             </div>
 
             <div class="filter-panel" id="filterPanel" style="display: none;">
@@ -71,18 +79,10 @@
                 </div>
             </div>
 
-            <nav class="sub-nav">
-                <a href="#" class="sub-nav-link active" data-tab="ideas-v1">Ideas v1</a>
-                <a href="#" class="sub-nav-link" data-tab="ideas-v2">Ideas v2</a>
-                <a href="#" class="sub-nav-link" data-tab="leaderboard">Leaderboard</a>
-            </nav>
-
             <div class="ideas-list-container" id="ideasContainerV1">
-                <!-- Ideas v1 populated by JS -->
             </div>
 
             <div class="ideas-list-container-v2" id="ideasContainerV2" style="display: none;">
-                <!-- Ideas v2 populated by JS -->
             </div>
 
             <div class="leaderboard-container" id="leaderboardContainer" style="display: none;">
@@ -91,12 +91,13 @@
                         <thead>
                             <tr>
                                 <th class="align-center">RANK</th>
-                                <th class="th-user-symbol">USER</th>
-                                <th class="align-right">TOTAL RETURNS</th>
+                                <th>USER</th> 
+                                <th class="align-center">SYMBOL</th> 
+                                <th class="align-left">TOTAL RETURNS</th>
                                 <th class="align-center">POSITION</th>
-                                <th class="align-right">PERFORMANCE <span class="timeframe">24H</span></th>
-                                <th class="align-right">VOLUME <span class="timeframe">24H</span></th>
-                                <th class="align-right">STATUS</th>
+                                <th class="align-left">PERFORMANCE <span class="timeframe">24H</span></th>
+                                <th class="align-left">VOLUME <span class="timeframe">24H</span></th>
+                                <th class="align-left">STATUS</th>
                             </tr>
                         </thead>
                         <tbody id="leaderboardBody"></tbody>
@@ -171,7 +172,6 @@
                     <div class="status" id="viewIdeaStatus"></div>
                 </div>
                 <div class="idea-interactions">
-                    <!-- MODIFIED: Added data-idea-id (will be set by JS) and class like-btn-sidebar -->
                     <button class="interaction-btn like-btn-sidebar" title="Like" data-idea-id="">
                         <i class="far fa-heart"></i> <span id="viewIdeaLikes"></span>
                     </button>
