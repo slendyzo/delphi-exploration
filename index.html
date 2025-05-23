@@ -42,7 +42,7 @@
         <!-- Main Content -->
         <main class="main-content">
             <div class="feature-header">
-                <h1>Untitled Shill Feature</h1>
+                <h1 id="pageTitle">Untitled Shill Feature</h1> 
                 <div class="feature-header-actions">
                     <button id="submitIdeaBtnPage" class="btn btn-primary">Submit Idea</button>
                 </div>
@@ -50,13 +50,22 @@
 
             <div class="page-controls"> 
                 <nav class="sub-nav">
-                    <a href="#" class="sub-nav-link active" data-tab="ideas-v1">Ideas v1</a>
-                    <a href="#" class="sub-nav-link" data-tab="ideas-v2">Ideas v2</a>
+                    <a href="#" class="sub-nav-link active" data-tab="ideas">Ideas</a> 
                     <a href="#" class="sub-nav-link" data-tab="leaderboard">Leaderboard</a>
                 </nav>
-                <button id="filtersBtn" class="btn btn-filter" style="display: none;">
-                    <i class="fas fa-filter"></i> Filters
-                </button>
+                <div class="view-controls"> 
+                    <div class="ideas-view-toggle" id="ideasViewToggle" style="display: flex;"> 
+                        <button class="view-toggle-btn active" data-view="v1" aria-label="List View">
+                            <i class="fas fa-list-ul"></i>
+                        </button>
+                        <button class="view-toggle-btn" data-view="v2" aria-label="Grid View">
+                            <i class="fas fa-th-large"></i>
+                        </button>
+                    </div>
+                    <button id="filtersBtn" class="btn btn-filter" style="display: none;">
+                        <i class="fas fa-filter"></i> Filters
+                    </button>
+                </div>
             </div>
 
             <div class="filter-panel" id="filterPanel" style="display: none;">
@@ -79,10 +88,11 @@
                 </div>
             </div>
 
-            <div class="ideas-list-container" id="ideasContainerV1">
-            </div>
-
-            <div class="ideas-list-container-v2" id="ideasContainerV2" style="display: none;">
+            <div class="ideas-content-wrapper">
+                <div class="ideas-list-container" id="ideasContainerV1" style="display: flex;"> 
+                </div>
+                <div class="ideas-list-container-v2" id="ideasContainerV2" style="display: none;">
+                </div>
             </div>
 
             <div class="leaderboard-container" id="leaderboardContainer" style="display: none;">
@@ -90,14 +100,14 @@
                     <table>
                         <thead>
                             <tr>
-                                <th class="align-center">RANK</th>
-                                <th>USER</th> 
-                                <th class="align-center">SYMBOL</th> 
-                                <th class="align-left">TOTAL RETURNS</th>
-                                <th class="align-center">POSITION</th>
-                                <th class="align-left">PERFORMANCE <span class="timeframe">24H</span></th>
-                                <th class="align-left">VOLUME <span class="timeframe">24H</span></th>
-                                <th class="align-left">STATUS</th>
+                                <th class="align-center sortable" data-sort-key="rank">RANK</th>
+                                <th class="sortable" data-sort-key="author">USER</th> 
+                                <th class="align-center sortable" data-sort-key="symbol">SYMBOL</th> 
+                                <th class="align-left sortable" data-sort-key="totalReturnsLeaderboard">TOTAL RETURNS</th>
+                                <th class="align-center sortable" data-sort-key="position">POSITION</th>
+                                <th class="align-left sortable" data-sort-key="performance">PERFORMANCE <span class="timeframe">24H</span></th>
+                                <th class="align-left sortable" data-sort-key="volume">VOLUME <span class="timeframe">24H</span></th>
+                                <th class="align-left sortable" data-sort-key="status">STATUS</th>
                             </tr>
                         </thead>
                         <tbody id="leaderboardBody"></tbody>
@@ -152,10 +162,13 @@
         </aside>
 
         <aside id="viewIdeaSidebar" class="sidebar">
+            <!-- MODIFIED HEADER STRUCTURE -->
             <div class="sidebar-header">
-                <h2 id="viewIdeaTitle"></h2>
-                <div class="idea-meta-top"><span id="viewIdeaUserDate"></span></div>
-                <button id="closeViewSidebarBtn" class="close-btn">×</button>
+                <div class="sidebar-header-main-content"> <!-- Wrapper for title and meta -->
+                    <h2 id="viewIdeaTitle"></h2>
+                    <div class="idea-meta-top"><span id="viewIdeaUserDate"></span></div>
+                </div>
+                <button id="closeViewSidebarBtn" class="close-btn header-close-btn">×</button> <!-- Added class for specific styling -->
             </div>
             <div class="sidebar-content">
                 <div class="idea-chart-placeholder">Chart Area Placeholder</div>
