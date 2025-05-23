@@ -9,27 +9,37 @@
 </head>
 <body>
     <div class="app-container">
-        <!-- Header -->
-        <header class="app-header">
-            <div class="logo-container">
-                <img src="Logo.svg" alt="Logo" class="header-logo">
-            </div>
-            <nav class="main-nav">
-                <a href="#" class="nav-link active">Home</a>
-                <a href="#" class="nav-link">Research</a>
-                <a href="#" class="nav-link">Alpha Feed</a>
-                <a href="#" class="nav-link">Library</a>
-                <a href="#" class="nav-link">Tools</a> <!-- Changed from Bookmarks for consistency with image -->
-            </nav>
-            <div class="header-actions">
-                <div class="search-bar">
-                    <i class="fas fa-search"></i>
-                    <input type="text" placeholder="Search">
-                </div>
-                <button class="btn btn-login">Login</button>
-                <button class="btn btn-primary btn-signup">Sign Up</button>
-            </div>
-        </header>
+<!-- Header -->
+<header class="app-header">
+    <button class="mobile-nav-toggle" aria-label="Toggle navigation" aria-expanded="false">
+        <i class="fas fa-bars"></i> <!-- Hamburger icon -->
+    </button>
+    <div class="logo-container"> <!-- This will be centered on mobile -->
+        <img src="Logo.svg" alt="Logo" class="header-logo">
+    </div>
+    <nav class="main-nav"> <!-- This will be transformed for mobile -->
+        <a href="#" class="nav-link active">Home</a>
+        <a href="#" class="nav-link">Research</a>
+        <a href="#" class="nav-link">Alpha Feed</a>
+        <a href="#" class="nav-link">Library</a>
+        <a href="#" class="nav-link">Tools</a>
+        <!-- We can add mobile-specific login/signup links here if needed, or style existing ones -->
+        <a href="#" class="nav-link mobile-only nav-link-login">Login</a>
+        <a href="#" class="nav-link mobile-only nav-link-signup btn btn-primary">Sign Up</a>
+    </nav>
+    <div class="header-actions">
+        <button class="search-toggle-mobile" aria-label="Toggle search">
+            <i class="fas fa-search"></i>
+        </button>
+        <div class="search-bar"> <!-- Full search bar for desktop -->
+            <i class="fas fa-search desktop-search-icon"></i>
+            <input type="text" placeholder="Search" class="desktop-search-input">
+        </div>
+        <!-- Desktop Login/Signup buttons will be hidden on mobile -->
+        <button class="btn btn-login desktop-only-btn">Login</button>
+        <button class="btn btn-primary btn-signup desktop-only-btn">Sign Up</button>
+    </div>
+</header>
 
         <!-- Main Content -->
         <main class="main-content">

@@ -369,3 +369,190 @@ body {
     background-color: rgba(0, 0, 0, 0.6); z-index: 999;
 }
 .overlay.active { display: block; }
+
+/* Add these styles to the END of your style.css file */
+
+/* ==========================================================================
+   Mobile Responsive Styles
+   ========================================================================== */
+
+   @media (max-width: 768px) {
+    /* --- General Body & Layout --- */
+    .main-content {
+        width: 95%; /* More width on mobile */
+        padding: 20px 15px; /* Adjust padding */
+    }
+
+    /* --- Header --- */
+    .app-header {
+        padding: 0 15px;
+        height: 56px; /* Common mobile header height */
+        justify-content: space-between; /* Key for mobile layout */
+    }
+
+    .mobile-nav-toggle {
+        display: flex; /* Show hamburger */
+        align-items: center;
+        background: none;
+        border: none;
+        color: #e0e0e0;
+        font-size: 20px;
+        cursor: pointer;
+        padding: 0;
+        z-index: 1100; /* Above overlay, below open nav */
+        order: 1; /* Hamburger first */
+    }
+
+    .logo-container {
+        order: 2; /* Logo second (center) */
+        margin-right: 0; /* Remove desktop margin */
+        /* Centering the logo when items are space-between:
+           One way is to ensure other flex items take up necessary space or use absolute positioning.
+           For now, flex order helps. If true centering is needed with space-between,
+           the toggle and search icon would need to be equal width or use a different strategy.
+           Let's assume space-between gives an acceptable visual center for now.
+        */
+       flex-grow: 1; /* Allow logo to take space to help with centering if search icon is small */
+       display: flex;
+       justify-content: center;
+
+    }
+    .header-logo {
+        height: 24px; /* Adjust mobile logo size */
+    }
+
+    .main-nav {
+        display: none; /* Hide desktop nav by default */
+        flex-direction: column;
+        position: fixed;
+        top: 0;
+        left: -100%; /* Start off-screen */
+        width: 80%;
+        max-width: 300px;
+        height: 100vh;
+        background-color: #1C1E21; /* Dark background for nav */
+        padding-top: 70px; /* Space for header */
+        box-shadow: 2px 0 5px rgba(0,0,0,0.5);
+        z-index: 1050; /* Below sidebar toggle, above overlay */
+        transition: left 0.3s ease-in-out;
+        align-items: flex-start;
+        gap: 0;
+    }
+    .main-nav.active { /* Class to be added by JS */
+        display: flex;
+        left: 0;
+    }
+    .main-nav .nav-link {
+        color: #e0e0e0;
+        padding: 15px 20px;
+        width: 100%;
+        box-sizing: border-box;
+        border-bottom: 1px solid #2c2c2c;
+        border-radius: 0;
+        font-size: 16px;
+    }
+    .main-nav .nav-link:hover,
+    .main-nav .nav-link.active {
+        background-color: #2a2d31;
+    }
+    .main-nav .nav-link:last-child {
+        border-bottom: none;
+    }
+    .main-nav .mobile-only { display: block; } /* Show mobile login/signup */
+    .main-nav .btn-primary { width: auto; margin: 15px 20px; padding: 10px 15px;}
+
+
+    .header-actions {
+        order: 3; /* Search icon area third */
+        gap: 10px;
+    }
+    .header-actions .search-bar {
+        background-color: transparent;
+        padding: 0;
+        width: auto; /* Let icon define width */
+    }
+    .header-actions .search-bar .desktop-search-icon {
+        display: none; /* Hide desktop icon if using a toggle */
+    }
+    .header-actions .search-bar .desktop-search-input {
+        display: none; /* Hide desktop input */
+    }
+    .search-toggle-mobile {
+        display: flex; /* Show mobile search icon */
+        align-items: center;
+        background: none;
+        border: none;
+        color: #e0e0e0;
+        font-size: 18px;
+        cursor: pointer;
+        padding: 0;
+    }
+
+    .desktop-only-btn {
+        display: none !important; /* Hide desktop login/signup buttons */
+    }
+
+    /* --- Feature Header (Title and Page Buttons) --- */
+    .feature-header {
+        /* flex-direction: column; */ /* If title needs to be above buttons */
+        /* align-items: flex-start; */
+        gap: 15px;
+    }
+    .feature-header h1 {
+        font-size: 1.5em; /* Smaller title */
+        margin-right: auto; /* Push buttons to right */
+    }
+    .feature-header-actions {
+        /* Buttons might already be small enough, or adjust .btn-primary padding/font-size within media query */
+    }
+    #submitIdeaBtnPage, #filtersBtn {
+        padding: 8px 12px;
+        font-size: 13px;
+    }
+
+    /* --- Sub Navigation (Ideas/Leaderboard Tabs) --- */
+    .sub-nav {
+        margin-bottom: 20px;
+        /* For many tabs, consider horizontal scrolling: */
+        /* white-space: nowrap; */
+        /* overflow-x: auto; */
+    }
+    .sub-nav-link {
+        padding: 8px 10px;
+        font-size: 0.9em;
+    }
+
+    /* --- Filter Panel (Basic position change, more styling later) --- */
+    .filter-panel {
+        /* Will be restyled significantly later for bottom sheet */
+        width: 90%;
+        left: 5%;
+        right: 5%;
+        top: 100px; /* Temporary position */
+        position: fixed; /* Change from absolute to fixed for full screen behavior */
+        z-index: 1200; /* Above overlay */
+    }
+
+    /* Overlay for mobile nav and other modals */
+    .overlay.mobile-nav-active {
+        display: block;
+        z-index: 1040; /* Below mobile nav, above content */
+    }
+}
+
+/* Smaller mobile screens if needed */
+@media (max-width: 480px) {
+    .main-content {
+        padding: 15px 10px;
+    }
+    .feature-header h1 {
+        font-size: 1.3em;
+    }
+    .sidebar { /* Make sidebars full width on very small screens */
+        width: 100% !important;
+        right: -100% !important; /* For full width slide */
+    }
+    .sidebar.open {
+        right: 0 !important;
+    }
+}

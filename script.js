@@ -304,6 +304,46 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // --- Event Listeners (Setup) ---
+
+// --- Mobile Navigation Toggle ---
+const mobileNavToggle = document.querySelector('.mobile-nav-toggle');
+const mainNav = document.querySelector('.main-nav');
+// const pageOverlay = document.getElementById('overlay'); // Already have this as 'overlay'
+
+if (mobileNavToggle && mainNav) {
+    mobileNavToggle.addEventListener('click', () => {
+        const isNavOpen = mainNav.classList.contains('active');
+        mobileNavToggle.setAttribute('aria-expanded', !isNavOpen);
+        mainNav.classList.toggle('active');
+        if (overlay) { // Check if overlay exists
+             overlay.classList.toggle('mobile-nav-active'); // Use a specific class for nav overlay
+        }
+        // Optional: Prevent body scroll when nav is open
+        // document.body.style.overflow = mainNav.classList.contains('active') ? 'hidden' : '';
+    });
+
+    // Close mobile nav if overlay is clicked
+    if (overlay) {
+        overlay.addEventListener('click', () => {
+            if (mainNav.classList.contains('active')) {
+                mainNav.classList.remove('active');
+                mobileNavToggle.setAttribute('aria-expanded', 'false');
+                overlay.classList.remove('mobile-nav-active');
+                // document.body.style.overflow = '';
+            }
+        });
+    }
+}
+
+// (Optional) Mobile Search Toggle - basic alert for now
+const mobileSearchToggle = document.querySelector('.search-toggle-mobile');
+if (mobileSearchToggle) {
+    mobileSearchToggle.addEventListener('click', () => {
+        alert('Mobile search to be implemented! Could show a full screen search input.');
+        // Here you would typically show a full-screen search overlay or input field
+    });
+}
+
     if (submitIdeaBtnPage) submitIdeaBtnPage.addEventListener('click', () => toggleSidebar(submitIdeaSidebar, true));
     if (closeSubmitSidebarBtn) closeSubmitSidebarBtn.addEventListener('click', () => toggleSidebar(submitIdeaSidebar, false));
     if (closeViewSidebarBtn) closeViewSidebarBtn.addEventListener('click', () => toggleSidebar(viewIdeaSidebar, false));
