@@ -19,6 +19,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const mobileNavToggle = document.querySelector('.mobile-nav-toggle');
     const mainNav = document.querySelector('.main-nav');
     const mobileSearchToggle = document.querySelector('.search-toggle-mobile');
+    const mainContentElement = document.querySelector('.main-content'); 
 
     // --- Initial Data (Sample Ideas) ---
     let ideas = [
@@ -463,3 +464,42 @@ document.addEventListener('DOMContentLoaded', () => {
 
     setActiveTab('ideas-v1');
 });
+
+function setActiveTab(targetTab) {
+    if (!subNavLinks || subNavLinks.length === 0) return;
+    subNavLinks.forEach(link => {
+        link.classList.remove('active');
+        if (link.dataset.tab === targetTab) link.classList.add('active');
+    });
+
+    const pageTitleElement = document.querySelector('.feature-header h1');
+
+    // Default state for mainContent padding (remove full-bleed class)
+    if (mainContentElement) {
+        mainContentElement.classList.remove('ideas-v2-full-bleed');
+    }
+
+    if (ideasContainerV1) ideasContainerV1.style.display = 'none';
+    if (ideasContainerV2) ideasContainerV2.style.display = 'none';
+    if (leaderboardContainer) leaderboardContainer.style.display = 'none';
+    if (filtersBtn) filtersBtn.style.display = 'none';
+
+    if (targetTab === 'ideas-v1') {
+        if (ideasContainerV1) ideasContainerV1.style.display = 'flex';
+        if (pageTitleElement) pageTitleElement.textContent = 'Untitled Shill Feature (v1)';
+        renderIdeasV1();
+    } else if (targetTab === 'ideas-v2') {
+        if (mainContentElement) { // Apply full-bleed class
+            mainContentElement.classList.add('ideas-v2-full-bleed');
+        }
+        if (ideasContainerV2) ideasContainerV2.style.display = 'grid';
+        if (pageTitleElement) pageTitleElement.textContent = 'Untitled Shill Feature (v2)';
+        renderIdeasV2();
+    } else if (targetTab === 'leaderboard') {
+        if (leaderboardContainer) leaderboardContainer.style.display = 'block';
+        if (filtersBtn) filtersBtn.style.display = 'inline-flex';
+        if (pageTitleElement) pageTitleElement.textContent = 'Leaderboard';
+        renderLeaderboard();
+    }
+    if (filterPanel && targetTab !== 'leaderboard') { filterPanel.style.display = 'none'; }
+}

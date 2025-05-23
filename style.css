@@ -136,9 +136,13 @@ body {
 /* Ideas v2 Styles */
 .ideas-list-container-v2 {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); /* Cards will take full width up to their max or fill based on this */
-    gap: 20px; /* Gap between cards */
-    padding: 15px 0; /* Padding around the grid itself, adjust 0 if you want side padding here too */
+    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+    gap: 15px; 
+    padding: 15px; /* Add consistent padding on all sides for the grid itself */
+                   /* This will be the small padding you see from the screen edges */
+    /* Remove the negative margins if you had them from previous attempts */
+    /* margin-left: 0; */
+    /* margin-right: 0; */
 }
 .idea-card-v2 {
     background-color: #1C1E21; padding: 15px; border-radius: 8px; color: #adb5bd;
@@ -488,4 +492,19 @@ body {
     }
     #viewIdeaSidebar .sidebar-header h2 { font-size: 1.1em; margin-left: -20px; }
     #viewIdeaSidebar .sidebar-header .close-btn { font-size: 20px; }
+}
+
+/* Inside @media (max-width: 768px) */
+.main-content.ideas-v2-full-bleed {
+    /* This might not be strictly necessary if the desktop version already removes padding */
+    /* but can be used for specific mobile overrides if padding: 0 was too much */
+    /* padding-left: 5px; */
+    /* padding-right: 5px; */
+}
+
+.ideas-list-container-v2 {
+    /* Styles from before are likely fine, but ensure its padding works with full-bleed parent */
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 10px;
+    padding: 10px; /* Adjust padding for mobile if needed */
 }
