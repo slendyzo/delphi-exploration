@@ -3,7 +3,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const submitIdeaBtnPage = document.getElementById('submitIdeaBtnPage');
     const submitIdeaSidebar = document.getElementById('submitIdeaSidebar');
     const closeSubmitSidebarBtn = document.getElementById('closeSubmitSidebarBtn');
-    const submitIdeaForm = document.getElementById('submitIdeaForm'); // Ensured it's declared
+    const submitIdeaForm = document.getElementById('submitIdeaForm');
     const ideasContainerV1 = document.getElementById('ideasContainerV1');
     const ideasContainerV2 = document.getElementById('ideasContainerV2');
     const overlay = document.getElementById('overlay');
@@ -19,7 +19,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const mobileNavToggle = document.querySelector('.mobile-nav-toggle');
     const mainNav = document.querySelector('.main-nav');
     const mobileSearchToggle = document.querySelector('.search-toggle-mobile');
-    const mainContentElement = document.querySelector('.main-content'); 
+    const mainContentElement = document.querySelector('.main-content'); // Added for full-bleed
+
 
     // --- Initial Data (Sample Ideas) ---
     let ideas = [
@@ -57,7 +58,7 @@ document.addEventListener('DOMContentLoaded', () => {
         ideasContainerV1.innerHTML = '';
         const ideasToDisplay = ideas.slice().sort((a, b) => b.id - a.id).slice(0, 10);
         ideasToDisplay.forEach(idea => {
-            const ideaCard = createIdeaCard(idea); // Uses original card style
+            const ideaCard = createIdeaCard(idea);
             if (ideaCard) ideasContainerV1.appendChild(ideaCard);
         });
     }
@@ -179,11 +180,11 @@ document.addEventListener('DOMContentLoaded', () => {
                     this.querySelector('.like-count').textContent = ideaToUpdate.likes;
                     const heartIcon = this.querySelector('i');
                     if (heartIcon) { heartIcon.classList.toggle('far', !ideaToUpdate.isLiked); heartIcon.classList.toggle('fas', ideaToUpdate.isLiked); }
-                    const viewSidebarEl = document.getElementById('viewIdeaSidebar'); // Renamed to avoid conflict
-                    if (viewSidebarEl.classList.contains('open')) {
-                        const currentSidebarIdeaId = viewSidebarEl.querySelector('.comments-section')?.dataset.currentIdeaId;
+                    const currentViewSidebar = document.getElementById('viewIdeaSidebar'); // Use the global var
+                    if (currentViewSidebar.classList.contains('open')) {
+                        const currentSidebarIdeaId = currentViewSidebar.querySelector('.comments-section')?.dataset.currentIdeaId;
                         if (currentSidebarIdeaId == clickedIdeaId) {
-                            const likesSpan = viewSidebarEl.querySelector('#viewIdeaLikes');
+                            const likesSpan = currentViewSidebar.querySelector('#viewIdeaLikes');
                             if (likesSpan) likesSpan.textContent = ideaToUpdate.likes;
                         }
                     }
@@ -231,7 +232,6 @@ document.addEventListener('DOMContentLoaded', () => {
     } else { console.error("Submit Idea Form (#submitIdeaForm) not found!"); }
 
     function populateViewSidebar(ideaId) {
-        // ... (This function remains largely the same, ensure it uses the correct IDs from HTML) ...
         try {
             const idea = ideas.find(i => i.id == ideaId);
             if (!idea) { console.error(`[populateViewSidebar] Idea not found for ID: ${ideaId}`); return; }
@@ -266,7 +266,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function renderComments(ideaId) {
-        // ... (This function remains largely the same) ...
         const idea = ideas.find(i => i.id == ideaId);
         const commentList = document.getElementById('commentList');
         if (!commentList) return;
@@ -291,24 +290,20 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function updateCardCommentCount(ideaId, count) {
-        // This function needs to know which container (v1 or v2) is active or check both.
-        // For now, assuming it updates V1 card if found.
         if (ideasContainerV1) {
             const cardV1 = ideasContainerV1.querySelector(`.idea-card[data-idea-id='${ideaId}']`);
             if (cardV1) {
                 const commentCountElement = cardV1.querySelector('.fa-comment');
                 if (commentCountElement && commentCountElement.nextSibling) {
-                    commentCountElement.nextSibling.textContent = ` ${count}`;
+                     commentCountElement.nextSibling.textContent = ` ${count}`;
                 }
             }
         }
-        // Add similar logic for V2 cards if their structure for comment count display is different
         if (ideasContainerV2) {
              const cardV2 = ideasContainerV2.querySelector(`.idea-card-v2[data-idea-id='${ideaId}']`);
              if (cardV2) {
-                const commentCountElement = cardV2.querySelector('button[title="Comment"]'); // Assuming structure
+                const commentCountElement = cardV2.querySelector('button[title="Comment"]');
                 if (commentCountElement) {
-                    // Example: Update text like "<i>...</i> N"
                     const icon = commentCountElement.querySelector('i');
                     commentCountElement.innerHTML = (icon ? icon.outerHTML : '') + ` ${count}`;
                 }
@@ -365,7 +360,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function renderLeaderboard() {
-        // ... (renderLeaderboard code remains the same as last working version) ...
         if (!leaderboardBody) { console.error("Leaderboard body (tbody) not found!"); return; }
         leaderboardBody.innerHTML = '';
         const sortedIdeas = [...ideas];
@@ -379,7 +373,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const row = document.createElement('tr');
             row.dataset.ideaId = idea.id;
             let symbolIconHtml = '';
-            if (idea.network) {
+            if (idea.network) { 
                 const networkLower = idea.network.toLowerCase();
                 if (networkLower === 'ethereum' || networkLower === 'bsc') symbolIconHtml = `<i class="fab fa-ethereum leaderboard-symbol-icon"></i>`;
                 else if (networkLower === 'solana') symbolIconHtml = `<i class="fa-brands fa-solana leaderboard-symbol-icon"></i>`;
@@ -415,6 +409,11 @@ document.addEventListener('DOMContentLoaded', () => {
             if (link.dataset.tab === targetTab) link.classList.add('active');
         });
         const pageTitleElement = document.querySelector('.feature-header h1');
+        
+        if (mainContentElement) { // Always remove full-bleed first
+            mainContentElement.classList.remove('ideas-v2-full-bleed');
+        }
+
         if (ideasContainerV1) ideasContainerV1.style.display = 'none';
         if (ideasContainerV2) ideasContainerV2.style.display = 'none';
         if (leaderboardContainer) leaderboardContainer.style.display = 'none';
@@ -425,6 +424,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (pageTitleElement) pageTitleElement.textContent = 'Untitled Shill Feature (v1)';
             renderIdeasV1();
         } else if (targetTab === 'ideas-v2') {
+            if (mainContentElement) mainContentElement.classList.add('ideas-v2-full-bleed'); // Add for V2
             if (ideasContainerV2) ideasContainerV2.style.display = 'grid';
             if (pageTitleElement) pageTitleElement.textContent = 'Untitled Shill Feature (v2)';
             renderIdeasV2();
@@ -464,42 +464,3 @@ document.addEventListener('DOMContentLoaded', () => {
 
     setActiveTab('ideas-v1');
 });
-
-function setActiveTab(targetTab) {
-    if (!subNavLinks || subNavLinks.length === 0) return;
-    subNavLinks.forEach(link => {
-        link.classList.remove('active');
-        if (link.dataset.tab === targetTab) link.classList.add('active');
-    });
-
-    const pageTitleElement = document.querySelector('.feature-header h1');
-
-    // Default state for mainContent padding (remove full-bleed class)
-    if (mainContentElement) {
-        mainContentElement.classList.remove('ideas-v2-full-bleed');
-    }
-
-    if (ideasContainerV1) ideasContainerV1.style.display = 'none';
-    if (ideasContainerV2) ideasContainerV2.style.display = 'none';
-    if (leaderboardContainer) leaderboardContainer.style.display = 'none';
-    if (filtersBtn) filtersBtn.style.display = 'none';
-
-    if (targetTab === 'ideas-v1') {
-        if (ideasContainerV1) ideasContainerV1.style.display = 'flex';
-        if (pageTitleElement) pageTitleElement.textContent = 'Untitled Shill Feature (v1)';
-        renderIdeasV1();
-    } else if (targetTab === 'ideas-v2') {
-        if (mainContentElement) { // Apply full-bleed class
-            mainContentElement.classList.add('ideas-v2-full-bleed');
-        }
-        if (ideasContainerV2) ideasContainerV2.style.display = 'grid';
-        if (pageTitleElement) pageTitleElement.textContent = 'Untitled Shill Feature (v2)';
-        renderIdeasV2();
-    } else if (targetTab === 'leaderboard') {
-        if (leaderboardContainer) leaderboardContainer.style.display = 'block';
-        if (filtersBtn) filtersBtn.style.display = 'inline-flex';
-        if (pageTitleElement) pageTitleElement.textContent = 'Leaderboard';
-        renderLeaderboard();
-    }
-    if (filterPanel && targetTab !== 'leaderboard') { filterPanel.style.display = 'none'; }
-}

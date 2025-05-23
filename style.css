@@ -5,6 +5,7 @@ body {
     background-color: #0E1012;
     color: #e0e0e0;
     line-height: 1.6;
+    overflow-x: hidden; /* Prevent horizontal scrollbars if full-bleed misbehaves slightly */
 }
 .app-container { display: flex; flex-direction: column; min-height: 100vh; }
 
@@ -44,13 +45,11 @@ body {
     display: inline-flex; align-items: center; justify-content: center;
     transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
 }
-/* Primary Button Styles */
 .btn-primary {
     background-color: #007bff; color: white; padding: 10px 20px; font-size: 15px; font-weight: 500;
 }
 .btn-primary:hover { background-color: #0069d9; box-shadow: 0 2px 8px rgba(0, 123, 255, 0.3); }
 .btn-primary:active { background-color: #005cbf; }
-
 .btn-login {
     background-color: transparent; color: #D1D3D6; padding: 9px 15px;
     border-radius: 6px; font-weight: 500; font-size: 14px;
@@ -60,9 +59,25 @@ body {
 
 /* Main Content Styles */
 .main-content {
-    padding: 30px 20px; flex-grow: 1; width: 85%; max-width: 1200px;
-    margin: 0 auto; box-sizing: border-box;
+    padding: 30px 20px; /* Default padding for V1 and Leaderboard */
+    flex-grow: 1; 
+    width: 85%; 
+    max-width: 1200px;
+    margin: 0 auto; 
+    box-sizing: border-box;
+    transition: padding 0.3s ease, max-width 0.3s ease; /* Smooth transition for padding changes */
 }
+/* Class added by JS when Ideas V2 is active for full-bleed effect */
+.main-content.ideas-v2-full-bleed {
+    width: 100%;
+    max-width: none; /* Override max-width */
+    padding-left: 0;  /* Remove side padding */
+    padding-right: 0; /* Remove side padding */
+    /* Top/bottom padding can remain or be adjusted if needed */
+    /* padding-top: 30px; */
+    /* padding-bottom: 30px; */
+}
+
 .feature-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; }
 .feature-header h1 { font-size: 1.8em; margin: 0; color: #ffffff; }
 .feature-header-actions { display: flex; gap: 10px; }
@@ -91,7 +106,7 @@ body {
 
 /* Ideas List Container (V1) */
 .ideas-list-container { display: flex; flex-direction: column; gap: 15px; }
-/* Idea Card Styles (V1) */
+/* Idea Card Styles (V1) - Copied from your previous complete CSS */
 .idea-card {
     background-color: #1C1E21; padding: 20px; border-radius: 8px; cursor: pointer;
     transition: box-shadow 0.2s ease, outline 0.2s ease; display: flex; flex-direction: column; gap: 15px;
@@ -133,16 +148,15 @@ body {
 .idea-card-actions button:hover { color: #007bff; }
 .idea-card-actions i { font-size: 1.1em; margin-right: 3px; }
 
+
 /* Ideas v2 Styles */
 .ideas-list-container-v2 {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
-    gap: 15px; 
-    padding: 15px; /* Add consistent padding on all sides for the grid itself */
-                   /* This will be the small padding you see from the screen edges */
-    /* Remove the negative margins if you had them from previous attempts */
-    /* margin-left: 0; */
-    /* margin-right: 0; */
+    gap: 20px;
+    padding: 15px; /* Padding for the content inside the full-bleed container */
+    box-sizing: border-box;
+    /* No negative margins, width:auto by default takes parent width */
 }
 .idea-card-v2 {
     background-color: #1C1E21; padding: 15px; border-radius: 8px; color: #adb5bd;
@@ -307,7 +321,6 @@ body {
 .leaderboard-container th .timeframe { font-size: 0.9em; color: #6c757d; text-transform: none; margin-left: 2px; }
 .leaderboard-container tbody tr { background-color: transparent; cursor: pointer; transition: background-color 0.15s ease; }
 .leaderboard-container tbody tr:hover { background-color: #25272a; }
-
 .leaderboard-container .rank-cell { color: #6c757d; font-weight: 500; width: 5%; padding-left: 15px; text-align: center; padding-top: 20px; }
 .leaderboard-container .th-user-symbol { width: 25%; padding-left: 5px; text-align: left; }
 .leaderboard-container .user-symbol-cell { padding-left: 5px; text-align: left; }
@@ -360,17 +373,19 @@ body {
     .desktop-only-btn { display: inline-flex !important; }
     .btn-login, .btn-signup { font-size: 13px; padding: 8px 12px; }
     .main-content { width: 90%; max-width: 960px; }
+    .main-content.ideas-v2-full-bleed { /* Reset full-bleed for tablet if needed */
+        width: 90%; max-width: 960px; padding-left: 20px; padding-right: 20px;
+    }
+    .ideas-list-container-v2 { /* V2 grid on tablet */
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        padding: 15px 0; /* Adjust if main-content padding is different */
+    }
     .feature-header h1 { font-size: 1.6em; }
     #submitIdeaBtnPage, #filtersBtn { padding: 9px 16px; font-size: 14px; }
-    .idea-card-top-section { flex-direction: row; align-items: flex-start; } /* Revert for V1 cards */
-    .idea-card-meta-island { min-width: 250px; max-width: 300px; align-items: flex-end; } /* Revert for V1 cards */
-    .idea-card-date { align-self: flex-end; } /* Revert for V1 cards */
+    .idea-card-top-section { flex-direction: row; align-items: flex-start; }
+    .idea-card-meta-island { min-width: 250px; max-width: 300px; align-items: flex-end; }
+    .idea-card-date { align-self: flex-end; }
     
-    .ideas-list-container-v2 { /* V2 grid on tablet */
-        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); /* Adjust card size for tablet */
-        padding: 15px 0;
-    }
-
     .sidebar { 
         width: 380px !important; right: -380px !important;
         border-left: 1px solid #2c2c2c !important;
@@ -393,7 +408,22 @@ body {
    Mobile Responsive Styles (max-width: 768px)
    ========================================================================== */
 @media (max-width: 768px) {
-    .main-content { width: 95%; padding: 20px 15px; }
+    .main-content { width: 100%; padding: 20px 0; max-width:none; } /* Full width for mobile by default */
+    .main-content.ideas-v2-full-bleed { /* For v2, ensure it uses its own padding */
+        padding-left: 0;
+        padding-right: 0;
+    }
+     .ideas-list-container-v2 { /* V2 grid on mobile */
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        padding: 10px; /* Inner padding for cards from screen edge */
+    }
+    .ideas-list-container { /* V1 container needs its own padding now */
+        padding: 0 15px; /* Example side padding for V1 cards */
+    }
+    .leaderboard-container { /* Leaderboard needs its own padding */
+        padding: 0 10px;
+    }
+
     .app-header { padding: 0 15px; height: 56px; justify-content: space-between; }
     .mobile-nav-toggle {
         display: flex; align-items: center; background: none; border: none; color: #e0e0e0;
@@ -425,13 +455,12 @@ body {
         font-size: 18px; cursor: pointer; padding: 0;
     }
     .desktop-only-btn { display: none !important; }
-    .feature-header { gap: 15px; }
+    .feature-header { gap: 15px; padding: 0 15px; /* Padding for feature header inside full-width main-content */ }
     .feature-header h1 { font-size: 1.5em; margin-right: auto; }
     #submitIdeaBtnPage, #filtersBtn { padding: 8px 12px; font-size: 13px; }
-    .sub-nav { margin-bottom: 20px; }
+    .sub-nav { margin-bottom: 20px; padding: 0 15px; /* Padding for sub-nav inside full-width main-content */}
     .sub-nav-link { padding: 8px 10px; font-size: 0.9em; }
 
-    /* V1 Idea Card Island Fix on Mobile */
     .ideas-list-container .idea-card-top-section { flex-direction: column; align-items: stretch; gap: 10px; }
     .ideas-list-container .idea-card-main-info { padding-right: 0; }
     .ideas-list-container .idea-card-meta-island { min-width: 100%; max-width: 100%; align-items: flex-start; }
@@ -443,19 +472,10 @@ body {
     .ideas-list-container .idea-card-island .island-total-return span { font-size: 1em; }
     .ideas-list-container .idea-card-island .island-status { font-size: 0.85em; }
 
-    /* V2 Ideas Container on Mobile */
-    .ideas-list-container-v2 {
-        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); /* Or 1fr for single column */
-        padding: 10px 0; /* Less padding for mobile */
-        gap: 10px;
-    }
-
-    /* Mobile Full Screen Sidebars (General) */
     .sidebar { 
         width: 100vw !important; height: 100vh !important; top: 0 !important;
         right: -100vw !important; border-left: none !important; box-shadow: none !important;
     }
-    /* Specifics for #viewIdeaSidebar on mobile */
     #viewIdeaSidebar .sidebar-header { padding: 15px; flex-direction: row; align-items: center; }
     #viewIdeaSidebar .sidebar-header .close-btn { order: 1; font-size: 24px; }
     #viewIdeaSidebar .sidebar-header h2 { order: 2; flex-grow: 1; text-align: center; font-size: 1.2em; margin-left: -24px; }
@@ -466,7 +486,6 @@ body {
     #viewIdeaSidebar .interaction-btn { font-size: 1em; }
     #viewIdeaSidebar .interaction-btn i { font-size: 1.2em; }
 
-    /* Mobile Comment Input Bar for #viewIdeaSidebar */
     #viewIdeaSidebar .comment-input-area { display: none; } 
     #viewIdeaSidebar.open .comment-input-area { 
         display: flex; position: fixed; bottom: 0; left: 0; width: 100%;
@@ -483,28 +502,19 @@ body {
     }
 }
 
-/* Smaller mobile screens adjustments */
 @media (max-width: 480px) {
-    .main-content { padding: 15px 10px; }
-    .feature-header h1 { font-size: 1.3em; }
-    .ideas-list-container-v2 { /* Single column on very small screens */
-        grid-template-columns: 1fr;
+    .main-content { padding-left: 5px; padding-right: 5px; } /* Tighter padding for very small */
+     .ideas-list-container-v2 { 
+        grid-template-columns: 1fr; /* Single column on very small screens */
+        padding: 10px 5px;
     }
+     .ideas-list-container { padding: 0 10px; }
+     .leaderboard-container { padding: 0 5px; }
+     .feature-header { padding: 0 10px;}
+     .sub-nav {padding: 0 10px; }
+
+
+    .feature-header h1 { font-size: 1.3em; }
     #viewIdeaSidebar .sidebar-header h2 { font-size: 1.1em; margin-left: -20px; }
     #viewIdeaSidebar .sidebar-header .close-btn { font-size: 20px; }
-}
-
-/* Inside @media (max-width: 768px) */
-.main-content.ideas-v2-full-bleed {
-    /* This might not be strictly necessary if the desktop version already removes padding */
-    /* but can be used for specific mobile overrides if padding: 0 was too much */
-    /* padding-left: 5px; */
-    /* padding-right: 5px; */
-}
-
-.ideas-list-container-v2 {
-    /* Styles from before are likely fine, but ensure its padding works with full-bleed parent */
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 10px;
-    padding: 10px; /* Adjust padding for mobile if needed */
 }
