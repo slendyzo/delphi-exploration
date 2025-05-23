@@ -13,6 +13,9 @@ body {
     background-color: #131417; padding: 0 30px; display: flex; align-items: center;
     border-bottom: 1px solid #2c2c2c; height: 64px; box-sizing: border-box;
 }
+.mobile-nav-toggle, .search-toggle-mobile { display: none; } /* Hide mobile toggles by default */
+.main-nav .mobile-only { display: none; } /* Hide mobile-only nav links by default */
+
 .logo-container { display: flex; align-items: center; margin-right: 30px; }
 .header-logo { height: 28px; width: auto; display: block; }
 .main-nav { display: flex; align-items: center; gap: 10px; flex-grow: 1; }
@@ -32,7 +35,7 @@ body {
     outline: none; font-size: 14px; width: 100%;
 }
 .search-bar input::placeholder { color: #84888D; }
-.search-bar .fas { color: #84888D; font-size: 15px; }
+.search-bar .desktop-search-icon { color: #84888D; font-size: 15px; } /* Renamed from .fas for clarity */
 
 /* Base Button Styles */
 .btn {
@@ -68,8 +71,8 @@ body {
 .btn-filter i { margin-right: 8px; }
 
 .filter-panel {
-    position: absolute; top: 180px; /* Adjust this value based on your header + feature-header height */
-    right: 20px; /* Or calculate based on main-content margin */
+    position: absolute; top: 180px; /* Adjust dynamically or based on layout */
+    right: 20px; 
     background-color: #25272a; padding: 20px; border-radius: 8px;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3); z-index: 100; min-width: 250px; color: #e0e0e0;
 }
@@ -111,10 +114,10 @@ body {
 .island-left-content { display: flex; flex-direction: column; align-items: flex-start;}
 .island-position-asset { display: flex; align-items: center; gap: 8px; margin-bottom: 5px; }
 .island-position-asset .fab.fa-ethereum, .island-position-asset .fab.fa-btc, .island-position-asset .fa-brands.fa-solana {
-    color: #627EEA; font-size: 1.2em; /* Generic icon styling */
+    color: #627EEA; font-size: 1.2em;
 }
-.island-position-asset .fab.fa-btc { color: #f7931a; } /* Bitcoin orange */
-.island-position-asset .fa-brands.fa-solana { color: #00FFA3; } /* Solana teal/green */
+.island-position-asset .fab.fa-btc { color: #f7931a; }
+.island-position-asset .fa-brands.fa-solana { color: #00FFA3; }
 
 .island-position-asset .tag-asset { background-color: transparent; padding: 0; font-weight: 500; color: #e0e0e0; }
 .island-total-return { font-size: 0.75em; color: #88898a; }
@@ -164,9 +167,9 @@ body {
     transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
 }
 .position-btn:not(.active):hover { background-color: #2c2f33; border-color: #3a3f44; }
-.position-btn.active { color: white; } /* Base for active */
-.position-btn.active[data-value="Long"] { background-color: #28a745; border-color: #28a745; color: white; }
-.position-btn.active[data-value="Short"] { background-color: #dc3545; border-color: #dc3545; color: white; }
+.position-btn.active { color: white; }
+.position-btn.active[data-value="Long"] { background-color: #28a745; border-color: #28a745; }
+.position-btn.active[data-value="Short"] { background-color: #dc3545; border-color: #dc3545; }
 .checkbox-group { display: flex; align-items: flex-start; gap: 10px; }
 .checkbox-group input[type="checkbox"] { margin-top: 4px; width: 16px; height: 16px; accent-color: #007bff; }
 .checkbox-label { color: #b0b0b0; font-size: 0.85em; line-height: 1.4; flex: 1; }
@@ -212,347 +215,207 @@ body {
 .comment-text a { color: #007bff; text-decoration: none; }
 .comment-text a:hover { text-decoration: underline; }
 
-/* Leaderboard Container & Table basic styling */
+/* Leaderboard Styles */
 .leaderboard-container { margin-top: 20px; }
 .leaderboard-table-wrapper { overflow-x: auto; }
 .leaderboard-container table {
-    width: 100%;
-    border-collapse: collapse;
-    color: #adb5bd;
-    background-color: #1C1E21; /* Match card background from image */
-    border-radius: 8px; /* If the table itself should have rounded corners */
-    overflow: hidden; /* To make border-radius work on table */
+    width: 100%; border-collapse: collapse; color: #adb5bd;
+    background-color: #1C1E21; border-radius: 8px; overflow: hidden;
 }
-
-.leaderboard-container th,
-.leaderboard-container td {
-    padding: 14px 10px; /* Adjusted padding */
-    text-align: left;
-    border-bottom: 1px solid #2a2d31; /* Slightly lighter border from image */
-    vertical-align: middle;
-    font-size: 13px; /* Smaller base font for table content */
+.leaderboard-container th, .leaderboard-container td {
+    padding: 14px 10px; text-align: left; border-bottom: 1px solid #2a2d31;
+    vertical-align: top; /* Align content to top */ font-size: 13px;
 }
-
-.leaderboard-container tr:last-child td {
-    border-bottom: none; /* No border for the last row */
-}
-
+.leaderboard-container tr:last-child td { border-bottom: none; }
 .leaderboard-container th {
-    font-size: 11px; /* Even smaller for headers */
-    color: #84888D; /* Grey for table headers from image */
-    text-transform: uppercase;
-    font-weight: 500; /* Was 500 */
-    letter-spacing: 0.5px; /* Was 0.5px */
-    background-color: #1C1E21; /* Header background if different, image seems same */
-    padding-top: 16px;
-    padding-bottom: 16px;
+    font-size: 11px; color: #84888D; text-transform: uppercase; font-weight: 500;
+    letter-spacing: 0.5px; background-color: #1C1E21; padding-top: 16px; padding-bottom: 16px;
 }
-.leaderboard-container th .timeframe {
-    font-size: 0.9em; /* Relative to TH font size */
-    color: #6c757d; /* Darker grey for 24H */
-    text-transform: none;
-    margin-left: 2px;
-}
+.leaderboard-container th.align-right { text-align: right; }
+.leaderboard-container th.align-center { text-align: center; }
+.leaderboard-container th .timeframe { font-size: 0.9em; color: #6c757d; text-transform: none; margin-left: 2px; }
+.leaderboard-container tbody tr { background-color: transparent; cursor: pointer; transition: background-color 0.15s ease; }
+.leaderboard-container tbody tr:hover { background-color: #25272a; }
 
-.leaderboard-container tbody tr {
-    background-color: transparent; /* Rows are part of the table's bg */
-    cursor: pointer;
-    transition: background-color 0.15s ease;
-}
-.leaderboard-container tbody tr:hover {
-    background-color: #25272a; /* Slightly lighter on hover */
-}
-
-/* Specific Cell Styling for Leaderboard */
-.leaderboard-container .rank-cell {
-    color: #6c757d; /* Grey for rank number */
-    font-weight: 500;
-    width: 5%; /* Allocate small width for rank */
-    padding-left: 15px;
-    text-align: center;
-}
-
-.leaderboard-container .th-user-symbol { /* Header for user/symbol combined column */
-    width: 25%; /* Allocate more width */
-    padding-left: 5px;
-}
-
-
-.leaderboard-container .user-symbol-cell {
-    /* This cell contains two divs for user and symbol */
-    padding-left: 5px;
-}
-.leaderboard-container .user-info {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    margin-bottom: 4px; /* Space between user line and symbol line */
-}
-.leaderboard-user-avatar {
-    width: 22px; /* Slightly smaller avatar */
-    height: 22px;
-    border-radius: 50%;
-}
-.leaderboard-username {
-    color: #e0e0e0; /* White for username */
-    font-weight: 500;
-}
-.leaderboard-container .symbol-info {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    padding-left: 0px; /* Align with avatar edge if needed, or adjust based on avatar size */
-}
-.leaderboard-symbol-icon {
-    font-size: 14px; /* Icon size */
-    color: #84888D; /* Default icon color if not specific */
-    width: 16px; /* Ensure space for icon */
-    text-align: center;
-}
-/* Specific icon colors copied from card styles for consistency */
+.leaderboard-container .rank-cell { color: #6c757d; font-weight: 500; width: 5%; padding-left: 15px; text-align: center; padding-top: 20px; }
+.leaderboard-container .th-user-symbol { width: 25%; padding-left: 5px; text-align: left; }
+.leaderboard-container .user-symbol-cell { padding-left: 5px; text-align: left; }
+.leaderboard-container .user-info { display: flex; align-items: center; gap: 8px; margin-bottom: 4px; }
+.leaderboard-user-avatar { width: 22px; height: 22px; border-radius: 50%; }
+.leaderboard-username { color: #e0e0e0; font-weight: 500; }
+.leaderboard-container .symbol-info { display: flex; align-items: center; gap: 6px; }
+.leaderboard-symbol-icon { font-size: 14px; color: #84888D; width: 16px; text-align: center; }
 .leaderboard-symbol-icon.fab.fa-ethereum { color: #627EEA; }
 .leaderboard-symbol-icon.fab.fa-btc { color: #f7931a; }
 .leaderboard-symbol-icon.fa-brands.fa-solana { color: #00FFA3; }
-
-.leaderboard-symbol-text {
-    color: #84888D; /* Grey for symbol text */
-    font-size: 12px;
-}
-
-
-.leaderboard-container .total-returns-cell {
-    color: #e0e0e0; /* White for returns */
-    font-weight: 500;
-    text-align: right;
-    width: 15%;
-}
-
-.leaderboard-container .position-cell {
-    text-align: center; /* Center the tag */
-    width: 10%;
-}
-.leaderboard-container .position-cell .tag {
-    padding: 3px 10px; /* Adjust tag padding for table */
-    font-size: 11px;   /* Smaller font for tags in table */
-    border-radius: 12px; /* Pill shape */
-    display: inline-block; /* To allow centering */
-    min-width: 50px; /* Ensure tags have some width */
-}
-
-.leaderboard-container .performance-cell {
-    font-weight: 500;
-    text-align: right;
-    width: 15%;
-}
+.leaderboard-symbol-text { color: #84888D; font-size: 12px; }
+.leaderboard-container .total-returns-cell { color: #e0e0e0; font-weight: 500; text-align: right; width: 15%; padding-top: 20px; }
+.leaderboard-container .position-cell { text-align: center; width: 10%; padding-top: 20px; }
+.leaderboard-container .position-cell .tag { padding: 3px 10px; font-size: 11px; border-radius: 12px; display: inline-block; min-width: 50px; }
+.leaderboard-container .performance-cell { font-weight: 500; text-align: right; width: 15%; padding-top: 20px; }
 .leaderboard-container .performance-cell.positive { color: #28a745; }
 .leaderboard-container .performance-cell.negative { color: #dc3545; }
-
-.leaderboard-container .volume-cell {
-    color: #adb5bd; /* Lighter grey for volume */
-    text-align: right;
-    width: 15%;
-}
-
-.leaderboard-container .status-cell {
-    font-weight: 500;
-    text-align: right;
-    width: 15%;
-    padding-right: 15px;
-}
-.leaderboard-container .status-cell.active { color: #28a745; } /* Green for Active */
-.leaderboard-container .status-cell.pending { color: #ffc107; } /* Yellow for Pending */
-.leaderboard-container .status-cell.closed { color: #6c757d; } /* Grey for Closed */
+.leaderboard-container .volume-cell { color: #adb5bd; text-align: right; width: 15%; padding-top: 20px; }
+.leaderboard-container .status-cell { font-weight: 500; text-align: right; width: 15%; padding-right: 15px; padding-top: 20px; }
+.leaderboard-container .status-cell.active { color: #28a745; }
+.leaderboard-container .status-cell.pending { color: #ffc107; }
+.leaderboard-container .status-cell.closed { color: #6c757d; }
 
 /* Overlay */
 .overlay {
     display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
     background-color: rgba(0, 0, 0, 0.6); z-index: 999;
 }
-.overlay.active { display: block; }
-
-/* Add these styles to the END of your style.css file */
-
-/* ==========================================================================
-   Mobile Responsive Styles
-   ========================================================================== */
-
-   @media (max-width: 768px) {
-    /* --- General Body & Layout --- */
-    .main-content {
-        width: 95%; /* More width on mobile */
-        padding: 20px 15px; /* Adjust padding */
-    }
-
-    /* --- Header --- */
-    .app-header {
-        padding: 0 15px;
-        height: 56px; /* Common mobile header height */
-        justify-content: space-between; /* Key for mobile layout */
-    }
-
-    .mobile-nav-toggle {
-        display: flex; /* Show hamburger */
-        align-items: center;
-        background: none;
-        border: none;
-        color: #e0e0e0;
-        font-size: 20px;
-        cursor: pointer;
-        padding: 0;
-        z-index: 1100; /* Above overlay, below open nav */
-        order: 1; /* Hamburger first */
-    }
-
-    .logo-container {
-        order: 2; /* Logo second (center) */
-        margin-right: 0; /* Remove desktop margin */
-        /* Centering the logo when items are space-between:
-           One way is to ensure other flex items take up necessary space or use absolute positioning.
-           For now, flex order helps. If true centering is needed with space-between,
-           the toggle and search icon would need to be equal width or use a different strategy.
-           Let's assume space-between gives an acceptable visual center for now.
-        */
-       flex-grow: 1; /* Allow logo to take space to help with centering if search icon is small */
-       display: flex;
-       justify-content: center;
-
-    }
-    .header-logo {
-        height: 24px; /* Adjust mobile logo size */
-    }
-
-    .main-nav {
-        display: none; /* Hide desktop nav by default */
-        flex-direction: column;
-        position: fixed;
-        top: 0;
-        left: -100%; /* Start off-screen */
-        width: 80%;
-        max-width: 300px;
-        height: 100vh;
-        background-color: #1C1E21; /* Dark background for nav */
-        padding-top: 70px; /* Space for header */
-        box-shadow: 2px 0 5px rgba(0,0,0,0.5);
-        z-index: 1050; /* Below sidebar toggle, above overlay */
-        transition: left 0.3s ease-in-out;
-        align-items: flex-start;
-        gap: 0;
-    }
-    .main-nav.active { /* Class to be added by JS */
-        display: flex;
-        left: 0;
-    }
-    .main-nav .nav-link {
-        color: #e0e0e0;
-        padding: 15px 20px;
-        width: 100%;
-        box-sizing: border-box;
-        border-bottom: 1px solid #2c2c2c;
-        border-radius: 0;
-        font-size: 16px;
-    }
-    .main-nav .nav-link:hover,
-    .main-nav .nav-link.active {
-        background-color: #2a2d31;
-    }
-    .main-nav .nav-link:last-child {
-        border-bottom: none;
-    }
-    .main-nav .mobile-only { display: block; } /* Show mobile login/signup */
-    .main-nav .btn-primary { width: auto; margin: 15px 20px; padding: 10px 15px;}
-
-
-    .header-actions {
-        order: 3; /* Search icon area third */
-        gap: 10px;
-    }
-    .header-actions .search-bar {
-        background-color: transparent;
-        padding: 0;
-        width: auto; /* Let icon define width */
-    }
-    .header-actions .search-bar .desktop-search-icon {
-        display: none; /* Hide desktop icon if using a toggle */
-    }
-    .header-actions .search-bar .desktop-search-input {
-        display: none; /* Hide desktop input */
-    }
-    .search-toggle-mobile {
-        display: flex; /* Show mobile search icon */
-        align-items: center;
-        background: none;
-        border: none;
-        color: #e0e0e0;
-        font-size: 18px;
-        cursor: pointer;
-        padding: 0;
-    }
-
-    .desktop-only-btn {
-        display: none !important; /* Hide desktop login/signup buttons */
-    }
-
-    /* --- Feature Header (Title and Page Buttons) --- */
-    .feature-header {
-        /* flex-direction: column; */ /* If title needs to be above buttons */
-        /* align-items: flex-start; */
-        gap: 15px;
-    }
-    .feature-header h1 {
-        font-size: 1.5em; /* Smaller title */
-        margin-right: auto; /* Push buttons to right */
-    }
-    .feature-header-actions {
-        /* Buttons might already be small enough, or adjust .btn-primary padding/font-size within media query */
-    }
-    #submitIdeaBtnPage, #filtersBtn {
-        padding: 8px 12px;
-        font-size: 13px;
-    }
-
-    /* --- Sub Navigation (Ideas/Leaderboard Tabs) --- */
-    .sub-nav {
-        margin-bottom: 20px;
-        /* For many tabs, consider horizontal scrolling: */
-        /* white-space: nowrap; */
-        /* overflow-x: auto; */
-    }
-    .sub-nav-link {
-        padding: 8px 10px;
-        font-size: 0.9em;
-    }
-
-    /* --- Filter Panel (Basic position change, more styling later) --- */
-    .filter-panel {
-        /* Will be restyled significantly later for bottom sheet */
-        width: 90%;
-        left: 5%;
-        right: 5%;
-        top: 100px; /* Temporary position */
-        position: fixed; /* Change from absolute to fixed for full screen behavior */
-        z-index: 1200; /* Above overlay */
-    }
-
-    /* Overlay for mobile nav and other modals */
-    .overlay.mobile-nav-active {
-        display: block;
-        z-index: 1040; /* Below mobile nav, above content */
-    }
+.overlay.active { display: block; } /* For general sidebar */
+.overlay.mobile-nav-active { /* Specific for mobile nav overlay */
+    display: block;
+    z-index: 1040; /* Below mobile nav, above content */
 }
 
-/* Smaller mobile screens if needed */
-@media (max-width: 480px) {
-    .main-content {
-        padding: 15px 10px;
+
+/* ==========================================================================
+   Tablet Responsive Styles
+   ========================================================================== */
+@media (min-width: 769px) and (max-width: 1024px) {
+    .app-header { padding: 0 20px; }
+    .mobile-nav-toggle, .search-toggle-mobile, .main-nav .mobile-only { display: none !important; }
+    .main-nav {
+        display: flex !important; flex-direction: row; position: static; width: auto; height: auto;
+        background-color: transparent; padding-top: 0; box-shadow: none; left: 0;
+        align-items: center; gap: 10px;
     }
-    .feature-header h1 {
-        font-size: 1.3em;
+    .main-nav .nav-link { padding: 8px 12px; width: auto; border-bottom: none; font-size: 14px; }
+    .main-nav .btn-primary { width: auto; margin: 0; }
+    .header-actions .search-bar { display: flex; background-color: #202225; padding: 9px 12px; width: 200px; }
+    .header-actions .search-bar .desktop-search-icon { display: inline-block; }
+    .header-actions .search-bar .desktop-search-input { display: inline-block; }
+    .desktop-only-btn { display: inline-flex !important; }
+    .btn-login, .btn-signup { font-size: 13px; padding: 8px 12px; }
+    .main-content { width: 90%; max-width: 960px; }
+    .feature-header h1 { font-size: 1.6em; }
+    #submitIdeaBtnPage, #filtersBtn { padding: 9px 16px; font-size: 14px; }
+    .idea-card-top-section { flex-direction: row; align-items: flex-start; }
+    .idea-card-meta-island { min-width: 250px; max-width: 300px; align-items: flex-end; }
+    .idea-card-date { align-self: flex-end; }
+    .sidebar { width: 380px !important; right: -380px !important; }
+    .sidebar.open { right: 0 !important; }
+}
+
+/* ==========================================================================
+   Mobile Responsive Styles (max-width: 768px)
+   ========================================================================== */
+@media (max-width: 768px) {
+    /* --- General Body & Layout --- */
+    .main-content { width: 95%; padding: 20px 15px; }
+
+    /* --- Header --- */
+    .app-header { padding: 0 15px; height: 56px; justify-content: space-between; }
+    .mobile-nav-toggle {
+        display: flex; align-items: center; background: none; border: none; color: #e0e0e0;
+        font-size: 20px; cursor: pointer; padding: 0; z-index: 1100; order: 1;
     }
-    .sidebar { /* Make sidebars full width on very small screens */
-        width: 100% !important;
-        right: -100% !important; /* For full width slide */
+    .logo-container { order: 2; margin-right: 0; flex-grow: 1; display: flex; justify-content: center; }
+    .header-logo { height: 24px; }
+    .main-nav {
+        display: none; flex-direction: column; position: fixed; top: 0; left: -100%;
+        width: 80%; max-width: 300px; height: 100vh; background-color: #1C1E21;
+        padding-top: 70px; box-shadow: 2px 0 5px rgba(0,0,0,0.5); z-index: 1050;
+        transition: left 0.3s ease-in-out; align-items: flex-start; gap: 0;
     }
-    .sidebar.open {
+    .main-nav.active { display: flex; left: 0; }
+    .main-nav .nav-link {
+        color: #e0e0e0; padding: 15px 20px; width: 100%; box-sizing: border-box;
+        border-bottom: 1px solid #2c2c2c; border-radius: 0; font-size: 16px;
+    }
+    .main-nav .nav-link:hover, .main-nav .nav-link.active { background-color: #2a2d31; }
+    .main-nav .nav-link:last-child { border-bottom: none; }
+    .main-nav .mobile-only { display: block; }
+    .main-nav .btn-primary { width: auto; margin: 15px 20px; padding: 10px 15px;}
+    .header-actions { order: 3; gap: 10px; }
+    .header-actions .search-bar { background-color: transparent; padding: 0; width: auto; }
+    .header-actions .search-bar .desktop-search-icon { display: none; }
+    .header-actions .search-bar .desktop-search-input { display: none; }
+    .search-toggle-mobile {
+        display: flex; align-items: center; background: none; border: none; color: #e0e0e0;
+        font-size: 18px; cursor: pointer; padding: 0;
+    }
+    .desktop-only-btn { display: none !important; }
+
+    /* --- Feature Header (Title and Page Buttons) --- */
+    .feature-header { gap: 15px; }
+    .feature-header h1 { font-size: 1.5em; margin-right: auto; }
+    #submitIdeaBtnPage, #filtersBtn { padding: 8px 12px; font-size: 13px; }
+
+    /* --- Sub Navigation (Ideas/Leaderboard Tabs) --- */
+    .sub-nav { margin-bottom: 20px; }
+    .sub-nav-link { padding: 8px 10px; font-size: 0.9em; }
+
+    /* --- Mobile Idea Card Island Fix --- */
+    .idea-card-top-section { flex-direction: column; align-items: stretch; gap: 10px; }
+    .idea-card-main-info { padding-right: 0; }
+    .idea-card-meta-island { min-width: 100%; max-width: 100%; align-items: flex-start; }
+    .idea-card-date { align-self: flex-end; font-size: 0.75em; }
+    .idea-card-island { width: 100%; padding: 8px 10px; }
+    .idea-card-island .island-left-content .tag { font-size: 0.7em; padding: 3px 6px; }
+    .idea-card-island .island-left-content .tag-asset { font-size: 0.85em; }
+    .idea-card-island .island-total-return { font-size: 0.7em; }
+    .idea-card-island .island-total-return span { font-size: 1em; }
+    .idea-card-island .island-status { font-size: 0.85em; }
+
+    /* --- Mobile View Idea Sidebar (Full Screen) --- */
+    #viewIdeaSidebar.sidebar { /* Target specifically when it's a sidebar */
+        width: 100vw !important; /* Use vw for viewport width */
+        height: 100vh !important;
+        top: 0 !important;
+        right: -100vw !important; /* Slide from full viewport width off-screen */
+        border-left: none !important;
+        box-shadow: none;
+    }
+    #viewIdeaSidebar.sidebar.open {
         right: 0 !important;
     }
+    #viewIdeaSidebar .sidebar-header { padding: 15px; flex-direction: row; align-items: center; }
+    #viewIdeaSidebar .sidebar-header .close-btn { order: 1; font-size: 24px; }
+    #viewIdeaSidebar .sidebar-header h2 { order: 2; flex-grow: 1; text-align: center; font-size: 1.2em; margin-left: -24px; /* May need adjustment */ }
+    #viewIdeaSidebar .idea-meta-top { display: none; }
+    #viewIdeaSidebar .sidebar-content { padding: 15px; }
+    #viewIdeaSidebar .idea-details-header { padding-bottom: 15px; margin-bottom: 15px; }
+    #viewIdeaSidebar .idea-interactions { gap: 15px; justify-content: space-around; padding-bottom: 15px; margin-bottom: 15px; }
+    #viewIdeaSidebar .interaction-btn { font-size: 1em; }
+    #viewIdeaSidebar .interaction-btn i { font-size: 1.2em; }
+    #viewIdeaSidebar .comment-input-area {
+        position: fixed; bottom: 0; left: 0; width: 100%;
+        background-color: #1C1E21; padding: 10px 15px; box-sizing: border-box;
+        border-top: 1px solid #2c2c2c; z-index: 1060; /* Ensure above sidebar content */
+    }
+    #viewIdeaSidebar .comment-list { padding-bottom: 70px; } /* Space for fixed input */
+    
+    /* --- Filter Panel on Mobile (Full Screen Modal Style) --- */
+    .filter-panel {
+        position: fixed; /* Fixed position to cover screen */
+        top: 0;
+        left: 0;
+        width: 100vw; /* Full viewport width */
+        height: 100vh; /* Full viewport height */
+        background-color: #1C1E21; /* Darker bg for modal */
+        z-index: 1200; /* High z-index */
+        padding: 20px;
+        box-sizing: border-box;
+        display: none; /* Initially hidden, JS will show it */
+        flex-direction: column; /* For layout of content within */
+        overflow-y: auto;
+        border-radius: 0; /* No radius for full screen */
+        /* Add header for filter panel if needed, e.g. title and close button */
+    }
+    /* Example: if filter panel is toggled with an 'active' class by JS */
+    /* .filter-panel.active { display: flex; } */
+
+}
+
+/* Smaller mobile screens if needed (max-width: 480px) */
+@media (max-width: 480px) {
+    .main-content { padding: 15px 10px; }
+    .feature-header h1 { font-size: 1.3em; }
+    /* .sidebar rules from 768px already cover full width, so this might be redundant or for finer tweaks */
+    /* #viewIdeaSidebar specific adjustments if needed at this even smaller breakpoint */
 }

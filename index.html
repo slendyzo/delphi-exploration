@@ -87,15 +87,16 @@
         <table>
             <thead>
                 <tr>
-                    <th>RANK</th>
-                    <th class="th-user-symbol">USER</th> <!-- Changed: This header now covers both user and symbol conceptually -->
-                    <th>TOTAL RETURNS</th>
-                    <th>POSITION</th>
-                    <th>PERFORMANCE <span class="timeframe">24H</span></th>
-                    <th>VOLUME <span class="timeframe">24H</span></th>
-                    <th>STATUS</th>
+                    <th class="align-center">RANK</th>
+                    <th class="th-user-symbol">USER</th> <!-- Default left align is fine -->
+                    <th class="align-right">TOTAL RETURNS</th>
+                    <th class="align-center">POSITION</th>
+                    <th class="align-right">PERFORMANCE <span class="timeframe">24H</span></th>
+                    <th class="align-right">VOLUME <span class="timeframe">24H</span></th>
+                    <th class="align-right">STATUS</th>
                 </tr>
             </thead>
+            
             <tbody id="leaderboardBody">
                 <!-- Leaderboard rows will go here -->
             </tbody>
