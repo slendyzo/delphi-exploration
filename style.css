@@ -71,7 +71,7 @@ body {
 .btn-filter i { margin-right: 8px; }
 
 .filter-panel {
-    position: absolute; top: 180px; /* Adjust based on actual header height */
+    position: absolute; top: 180px; 
     right: 20px; 
     background-color: #25272a; padding: 20px; border-radius: 8px;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3); z-index: 100; min-width: 250px; color: #e0e0e0;
@@ -118,7 +118,6 @@ body {
 }
 .island-position-asset .fab.fa-btc { color: #f7931a; }
 .island-position-asset .fa-brands.fa-solana { color: #00FFA3; }
-
 .island-position-asset .tag-asset { background-color: transparent; padding: 0; font-weight: 500; color: #e0e0e0; }
 .island-total-return { font-size: 0.75em; color: #88898a; }
 .island-total-return span { display: block; font-size: 1.1em; font-weight: bold; color: #e0e0e0; }
@@ -137,45 +136,9 @@ body {
 /* Ideas v2 Styles */
 .ideas-list-container-v2 {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
-    gap: 15px; /* Keep the gap between cards */
-    
-    /* To make it use more screen space, assuming .main-content has horizontal padding of 20px */
-    /* These values should match the horizontal padding of .main-content */
-    margin-left: -20px; 
-    margin-right: -20px;
-    padding-left: 15px; /* Add some padding back so cards aren't glued to absolute screen edge */
-    padding-right: 15px;
-    padding-top: 15px; /* Consistent padding around the grid */
-    padding-bottom: 15px;
-}
-
-/* Adjustments within media queries if needed for full-bleed on mobile */
-@media (max-width: 768px) {
-    .ideas-list-container-v2 {
-        /* If .main-content padding changes on mobile, adjust these negative margins too */
-        margin-left: -15px; /* Assuming .main-content padding is 15px on mobile */
-        margin-right: -15px;
-        padding-left: 10px; /* Inner padding for mobile grid */
-        padding-right: 10px;
-        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); /* Smaller cards on mobile */
-        gap: 10px;
-    }
-}
-
-/* Ensure .main-content allows overflow if negative margins are used,
-   or ensure it's wide enough that this doesn't cause horizontal scrollbars
-   on the body. A better way might be to adjust .main-content padding via JS
-   when this tab is active, but let's try CSS first.
-*/
-/* An alternative to negative margins for .ideas-list-container-v2:
-   If you want to manage it by changing .main-content padding via JS when 'ideas-v2' tab is active:
-   (This would require JS to add/remove a class to .main-content)
-.main-content.ideas-v2-active {
-    padding-left: 5px;
-    padding-right: 5px;
-}
-*/
+    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); /* Cards will take full width up to their max or fill based on this */
+    gap: 20px; /* Gap between cards */
+    padding: 15px 0; /* Padding around the grid itself, adjust 0 if you want side padding here too */
 }
 .idea-card-v2 {
     background-color: #1C1E21; padding: 15px; border-radius: 8px; color: #adb5bd;
@@ -212,6 +175,8 @@ body {
 .idea-card-v2-actions button { background: none; border: none; color: #6c757d; cursor: pointer; font-size: 0.8em; padding: 0; }
 .idea-card-v2-actions button:hover { color: #007bff; }
 .idea-card-v2-actions i { font-size: 1em; margin-right: 2px; }
+.idea-card-v2-actions .like-btn-v2 i { color: #6c757d; transition: color 0.2s ease; }
+.idea-card-v2-actions .like-btn-v2.liked i { color: #007bff; }
 
 
 /* Tags */
@@ -256,7 +221,7 @@ body {
 .btn-submit-form { width: 100%; padding: 10px 15px; font-size: 1em; }
 
 /* View Idea Sidebar Specifics */
-#viewIdeaSidebar .sidebar-header { flex-direction: column; align-items: flex-start; } /* Desktop default */
+#viewIdeaSidebar .sidebar-header { flex-direction: column; align-items: flex-start; }
 .idea-meta-top { font-size: 0.9em; color: #888; margin-top: 5px; }
 .idea-chart-placeholder {
     width: 100%; height: 200px; background-color: #2a2d31; display: flex;
@@ -393,10 +358,15 @@ body {
     .main-content { width: 90%; max-width: 960px; }
     .feature-header h1 { font-size: 1.6em; }
     #submitIdeaBtnPage, #filtersBtn { padding: 9px 16px; font-size: 14px; }
-    .idea-card-top-section { flex-direction: row; align-items: flex-start; }
-    .idea-card-meta-island { min-width: 250px; max-width: 300px; align-items: flex-end; }
-    .idea-card-date { align-self: flex-end; }
+    .idea-card-top-section { flex-direction: row; align-items: flex-start; } /* Revert for V1 cards */
+    .idea-card-meta-island { min-width: 250px; max-width: 300px; align-items: flex-end; } /* Revert for V1 cards */
+    .idea-card-date { align-self: flex-end; } /* Revert for V1 cards */
     
+    .ideas-list-container-v2 { /* V2 grid on tablet */
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); /* Adjust card size for tablet */
+        padding: 15px 0;
+    }
+
     .sidebar { 
         width: 380px !important; right: -380px !important;
         border-left: 1px solid #2c2c2c !important;
@@ -457,22 +427,29 @@ body {
     .sub-nav { margin-bottom: 20px; }
     .sub-nav-link { padding: 8px 10px; font-size: 0.9em; }
 
-    .idea-card-top-section { flex-direction: column; align-items: stretch; gap: 10px; }
-    .idea-card-main-info { padding-right: 0; }
-    .idea-card-meta-island { min-width: 100%; max-width: 100%; align-items: flex-start; }
-    .idea-card-date { align-self: flex-end; font-size: 0.75em; }
-    .idea-card-island { width: 100%; padding: 8px 10px; }
-    .idea-card-island .island-left-content .tag { font-size: 0.7em; padding: 3px 6px; }
-    .idea-card-island .island-left-content .tag-asset { font-size: 0.85em; }
-    .idea-card-island .island-total-return { font-size: 0.7em; }
-    .idea-card-island .island-total-return span { font-size: 1em; }
-    .idea-card-island .island-status { font-size: 0.85em; }
+    /* V1 Idea Card Island Fix on Mobile */
+    .ideas-list-container .idea-card-top-section { flex-direction: column; align-items: stretch; gap: 10px; }
+    .ideas-list-container .idea-card-main-info { padding-right: 0; }
+    .ideas-list-container .idea-card-meta-island { min-width: 100%; max-width: 100%; align-items: flex-start; }
+    .ideas-list-container .idea-card-date { align-self: flex-end; font-size: 0.75em; }
+    .ideas-list-container .idea-card-island { width: 100%; padding: 8px 10px; }
+    .ideas-list-container .idea-card-island .island-left-content .tag { font-size: 0.7em; padding: 3px 6px; }
+    .ideas-list-container .idea-card-island .island-left-content .tag-asset { font-size: 0.85em; }
+    .ideas-list-container .idea-card-island .island-total-return { font-size: 0.7em; }
+    .ideas-list-container .idea-card-island .island-total-return span { font-size: 1em; }
+    .ideas-list-container .idea-card-island .island-status { font-size: 0.85em; }
+
+    /* V2 Ideas Container on Mobile */
+    .ideas-list-container-v2 {
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); /* Or 1fr for single column */
+        padding: 10px 0; /* Less padding for mobile */
+        gap: 10px;
+    }
 
     /* Mobile Full Screen Sidebars (General) */
     .sidebar { 
         width: 100vw !important; height: 100vh !important; top: 0 !important;
         right: -100vw !important; border-left: none !important; box-shadow: none !important;
-        /* z-index for open state is handled by .sidebar.open */
     }
     /* Specifics for #viewIdeaSidebar on mobile */
     #viewIdeaSidebar .sidebar-header { padding: 15px; flex-direction: row; align-items: center; }
@@ -506,21 +483,9 @@ body {
 @media (max-width: 480px) {
     .main-content { padding: 15px 10px; }
     .feature-header h1 { font-size: 1.3em; }
+    .ideas-list-container-v2 { /* Single column on very small screens */
+        grid-template-columns: 1fr;
+    }
     #viewIdeaSidebar .sidebar-header h2 { font-size: 1.1em; margin-left: -20px; }
     #viewIdeaSidebar .sidebar-header .close-btn { font-size: 20px; }
 }
-/* Add these styles for the V2 like button */
-
-.idea-card-v2-actions .like-btn-v2 i {
-    color: #6c757d; /* Default heart color */
-    transition: color 0.2s ease;
-}
-
-.idea-card-v2-actions .like-btn-v2.liked i {
-    color: #007bff; /* Blue color when liked - same as outline hover */
-    /* font-weight: 900; /* Makes Font Awesome 'fas' icons appear solid if using free version */
-}
-/* If you're using Font Awesome Pro, fas fa-heart will be solid by default.
-   For Font Awesome Free, `far fa-heart` is outline, `fas fa-heart` is solid.
-   The JS toggles these classes. The CSS above just colors the icon.
-*/

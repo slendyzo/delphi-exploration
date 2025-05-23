@@ -3,7 +3,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const submitIdeaBtnPage = document.getElementById('submitIdeaBtnPage');
     const submitIdeaSidebar = document.getElementById('submitIdeaSidebar');
     const closeSubmitSidebarBtn = document.getElementById('closeSubmitSidebarBtn');
-    const submitIdeaForm = document.getElementById('submitIdeaForm'); // Declaration
+    const submitIdeaForm = document.getElementById('submitIdeaForm'); // Ensured it's declared
     const ideasContainerV1 = document.getElementById('ideasContainerV1');
     const ideasContainerV2 = document.getElementById('ideasContainerV2');
     const overlay = document.getElementById('overlay');
@@ -16,22 +16,22 @@ document.addEventListener('DOMContentLoaded', () => {
     const filterPanel = document.getElementById('filterPanel');
     const positionButtons = document.querySelectorAll('#submitIdeaForm .position-btn');
     const hiddenPositionInput = document.getElementById('position');
-    const mobileNavToggle = document.querySelector('.mobile-nav-toggle'); // For mobile nav
-    const mainNav = document.querySelector('.main-nav'); // For mobile nav
-    const mobileSearchToggle = document.querySelector('.search-toggle-mobile'); // For mobile search
+    const mobileNavToggle = document.querySelector('.mobile-nav-toggle');
+    const mainNav = document.querySelector('.main-nav');
+    const mobileSearchToggle = document.querySelector('.search-toggle-mobile');
 
     // --- Initial Data (Sample Ideas) ---
     let ideas = [
-        { id: 1, title: "Buy TIA", description: "The future of HyperLiquid looks promising...", author: "Username", authorAvatar: `https://i.pravatar.cc/20?u=${encodeURIComponent("Username")}`, date: "May 19, 2025", symbol: "HYPE", network: "Ethereum", position: "Long", thesis: "The future of HyperLiquid is very bright...", contractAddress: "0x2948...21238", totalReturn: "--", totalReturnsLeaderboard: "+33.000%", status: "Active", likes: 15, commentsCount: 3, shares: 5, marketCap: "$2.3B", volume: "$232.12M", performance: "+24%", exitDate: "July 24, 2025", comments: [ { userAvatar: `https://i.pravatar.cc/30?u=Commenter1`, author: "CommenterOne", username: "@One", time: "2hr ago", text: "Solid thesis, I'm in!" }, { userAvatar: `https://i.pravatar.cc/30?u=SkepticSal`, author: "SkepticSal", username: "@Sal", time: "1hr ago", text: "Hmm, seems a bit overhyped. What are the risks?" }, { userAvatar: `https://i.pravatar.cc/30?u=${encodeURIComponent("Username")}`, author: "Username", username: "@Username", time: "30m ago", text: "Valid point Sal, main risk is regulatory uncertainty, but the tech is solid." } ] },
-        { id: 2, title: "Short BTC", description: "Bitcoin facing headwinds...", author: "AlphaUser", authorAvatar: `https://i.pravatar.cc/20?u=${encodeURIComponent("AlphaUser")}`, date: "May 18, 2025", symbol: "BTC", network: "Bitcoin", position: "Short", thesis: "Bitcoin is overbought and due for a significant correction...", contractAddress: "N/A", totalReturn: "+180%", totalReturnsLeaderboard: "+27.500%", status: "Closed", likes: 10, commentsCount: 2, shares: 3, marketCap: "$1.2T", volume: "$180.45M", performance: "+19%", exitDate: "Aug 10, 2025", comments: [ { userAvatar: `https://i.pravatar.cc/30?u=BullishBob`, author: "BullishBob", username: "@Bob", time: "5hr ago", text: "Shorting BTC? Brave soul!" }, { userAvatar: `https://i.pravatar.cc/30?u=${encodeURIComponent("AlphaUser")}`, author: "AlphaUser", username: "@Alpha", time: "4hr ago", text: "It's a calculated risk. The indicators are there." } ] },
-        { id: 3, title: "Long TIA again", description: "Celestia's modular approach is key...", author: "BetaTester", authorAvatar: `https://i.pravatar.cc/20?u=${encodeURIComponent("BetaTester")}`, date: "May 17, 2025", symbol: "TIA", network: "Celestia", position: "Long", thesis: "Celestia's modular design for blockchains is groundbreaking...", contractAddress: "N/A", totalReturn: "+50%", totalReturnsLeaderboard: "+10.323%", status: "Active", likes: 5, commentsCount: 1, shares: 1, marketCap: "$2.5B", volume: "$300.75M", performance: "-53%", exitDate: "Sep 01, 2025", comments: [ { userAvatar: `https://i.pravatar.cc/30?u=TechGuru`, author: "TechGuru", username: "@Guru", time: "1d ago", text: "Agreed, the modularity is a game changer." } ] },
-        { id: 4, title: "KTA All In", description: "Kadena's multi-chain scalability.", author: "GammaGuest", authorAvatar: `https://i.pravatar.cc/20?u=${encodeURIComponent("GammaGuest")}`, date: "May 16, 2025", symbol: "KTA", network: "Kadena", position: "Long", thesis: "Kadena's unique chainweb architecture...", totalReturn:"--", totalReturnsLeaderboard: "+23.200%", status: "Active", likes: 2, commentsCount: 0, shares: 0, marketCap: "$100M", volume: "$150.60M", performance: "+24%", exitDate: "N/A", comments: [] },
-        { id: 5, title: "Bitcoin Dip Buy", description: "Accumulating BTC on this dip.", author: "DeltaDude", authorAvatar: `https://i.pravatar.cc/20?u=${encodeURIComponent("DeltaDude")}`, date: "May 15, 2025", symbol: "BTC", network: "Bitcoin", position: "Long", thesis: "This dip is a prime buying opportunity...", totalReturn:"--", totalReturnsLeaderboard: "+22.120%", status: "Pending", likes: 7, commentsCount: 0, shares: 0, marketCap: "$1.2T", volume: "$275.10M", performance: "-11%", exitDate: "N/A", comments: [] },
-        { id: 6, title: "POPCAT Mania", description: "Popcat to the moon!", author: "EpsilonExpert", authorAvatar: `https://i.pravatar.cc/20?u=${encodeURIComponent("EpsilonExpert")}`, date: "May 14, 2025", symbol: "POPCAT", network: "Solana", position: "Long", thesis: "POPCAT has the meme potential...", totalReturn:"--", totalReturnsLeaderboard: "+12.430%", status: "Active", likes: 15, commentsCount: 0, shares: 0, marketCap: "$50M", volume: "$290.00M", performance: "+21%", exitDate: "N/A", comments: [] },
-        { id: 7, title: "WIF Next Wave", description: "Dogwifhat still has room.", author: "ZetaZone", authorAvatar: `https://i.pravatar.cc/20?u=${encodeURIComponent("ZetaZone")}`, date: "May 13, 2025", symbol: "WIF", network: "Solana", position: "Long", thesis: "While WIF has had a good run...", totalReturn:"--", totalReturnsLeaderboard: "+7.560%", status: "Closed", likes: 9, commentsCount: 0, shares: 0, marketCap: "$300M", volume: "$160.90M", performance: "+23%", exitDate: "N/A", comments: [] },
-        { id: 8, title: "Short INIT", description: "INIT protocol looks overvalued.", author: "EtaUser", authorAvatar: `https://i.pravatar.cc/20?u=${encodeURIComponent("EtaUser")}`, date: "May 12, 2025", symbol: "INIT", network: "Ethereum", position: "Short", thesis: "INIT's current valuation doesn't match...", totalReturn:"--", totalReturnsLeaderboard: "+3.450%", status: "Active", likes: 3, commentsCount: 0, shares: 0, marketCap: "$80M", volume: "$120.45M", performance: "+170%", exitDate: "N/A", comments: [] },
-        { id: 9, title: "CRV Bounce", description: "Curve Finance recovery.", author: "ThetaTester", authorAvatar: `https://i.pravatar.cc/20?u=${encodeURIComponent("ThetaTester")}`, date: "May 11, 2025", symbol: "CRV", network: "Ethereum", position: "Long", thesis: "Curve Finance is a cornerstone of DeFi...", totalReturn:"--", totalReturnsLeaderboard: "+2.310%", status: "Pending", likes: 6, commentsCount: 0, shares: 0, marketCap: "$500M", volume: "$310.30M", performance: "-25%", exitDate: "N/A", comments: [] },
-        { id: 10, title: "FARTCOIN Gem", description: "This is the one!", author: "IotaInfluencer", authorAvatar: `https://i.pravatar.cc/20?u=${encodeURIComponent("IotaInfluencer")}`, date: "May 10, 2025", symbol: "FARTCOIN", network: "BSC", position: "Long", thesis: "FARTCOIN has revolutionary tokenomics...", totalReturn:"--", totalReturnsLeaderboard: "+1.040%", status: "Active", likes: 22, commentsCount: 0, shares: 0, marketCap: "$1M", volume: "$250.20M", performance: "+20%", exitDate: "N/A", comments: [] }
+        { id: 1, title: "Buy TIA", description: "The future of HyperLiquid looks promising...", author: "Username", authorAvatar: `https://i.pravatar.cc/20?u=${encodeURIComponent("Username")}`, date: "May 19, 2025", symbol: "HYPE", network: "Ethereum", position: "Long", thesis: "The future of HyperLiquid is very bright...", contractAddress: "0x2948...21238", totalReturn: "--", totalReturnsLeaderboard: "+33.000%", status: "Active", likes: 15, commentsCount: 3, shares: 5, marketCap: "$2.3B", volume: "$232.12M", performance: "+24%", exitDate: "July 24, 2025", isLiked: false, comments: [ { userAvatar: `https://i.pravatar.cc/30?u=Commenter1`, author: "CommenterOne", username: "@One", time: "2hr ago", text: "Solid thesis, I'm in!" }, { userAvatar: `https://i.pravatar.cc/30?u=SkepticSal`, author: "SkepticSal", username: "@Sal", time: "1hr ago", text: "Hmm, seems a bit overhyped. What are the risks?" }, { userAvatar: `https://i.pravatar.cc/30?u=${encodeURIComponent("Username")}`, author: "Username", username: "@Username", time: "30m ago", text: "Valid point Sal, main risk is regulatory uncertainty, but the tech is solid." } ] },
+        { id: 2, title: "Short BTC", description: "Bitcoin facing headwinds...", author: "AlphaUser", authorAvatar: `https://i.pravatar.cc/20?u=${encodeURIComponent("AlphaUser")}`, date: "May 18, 2025", symbol: "BTC", network: "Bitcoin", position: "Short", thesis: "Bitcoin is overbought and due for a significant correction...", contractAddress: "N/A", totalReturn: "+180%", totalReturnsLeaderboard: "+27.500%", status: "Closed", likes: 10, commentsCount: 2, shares: 3, marketCap: "$1.2T", volume: "$180.45M", performance: "+19%", exitDate: "Aug 10, 2025", isLiked: false, comments: [ { userAvatar: `https://i.pravatar.cc/30?u=BullishBob`, author: "BullishBob", username: "@Bob", time: "5hr ago", text: "Shorting BTC? Brave soul!" }, { userAvatar: `https://i.pravatar.cc/30?u=${encodeURIComponent("AlphaUser")}`, author: "AlphaUser", username: "@Alpha", time: "4hr ago", text: "It's a calculated risk. The indicators are there." } ] },
+        { id: 3, title: "Long TIA again", description: "Celestia's modular approach is key...", author: "BetaTester", authorAvatar: `https://i.pravatar.cc/20?u=${encodeURIComponent("BetaTester")}`, date: "May 17, 2025", symbol: "TIA", network: "Celestia", position: "Long", thesis: "Celestia's modular design for blockchains is groundbreaking...", contractAddress: "N/A", totalReturn: "+50%", totalReturnsLeaderboard: "+10.323%", status: "Active", likes: 5, commentsCount: 1, shares: 1, marketCap: "$2.5B", volume: "$300.75M", performance: "-53%", exitDate: "Sep 01, 2025", isLiked: false, comments: [ { userAvatar: `https://i.pravatar.cc/30?u=TechGuru`, author: "TechGuru", username: "@Guru", time: "1d ago", text: "Agreed, the modularity is a game changer." } ] },
+        { id: 4, title: "KTA All In", description: "Kadena's multi-chain scalability.", author: "GammaGuest", authorAvatar: `https://i.pravatar.cc/20?u=${encodeURIComponent("GammaGuest")}`, date: "May 16, 2025", symbol: "KTA", network: "Kadena", position: "Long", thesis: "Kadena's unique chainweb architecture...", totalReturn:"--", totalReturnsLeaderboard: "+23.200%", status: "Active", likes: 2, commentsCount: 0, shares: 0, marketCap: "$100M", volume: "$150.60M", performance: "+24%", exitDate: "N/A", isLiked: false, comments: [] },
+        { id: 5, title: "Bitcoin Dip Buy", description: "Accumulating BTC on this dip.", author: "DeltaDude", authorAvatar: `https://i.pravatar.cc/20?u=${encodeURIComponent("DeltaDude")}`, date: "May 15, 2025", symbol: "BTC", network: "Bitcoin", position: "Long", thesis: "This dip is a prime buying opportunity...", totalReturn:"--", totalReturnsLeaderboard: "+22.120%", status: "Pending", likes: 7, commentsCount: 0, shares: 0, marketCap: "$1.2T", volume: "$275.10M", performance: "-11%", exitDate: "N/A", isLiked: false, comments: [] },
+        { id: 6, title: "POPCAT Mania", description: "Popcat to the moon!", author: "EpsilonExpert", authorAvatar: `https://i.pravatar.cc/20?u=${encodeURIComponent("EpsilonExpert")}`, date: "May 14, 2025", symbol: "POPCAT", network: "Solana", position: "Long", thesis: "POPCAT has the meme potential...", totalReturn:"--", totalReturnsLeaderboard: "+12.430%", status: "Active", likes: 15, commentsCount: 0, shares: 0, marketCap: "$50M", volume: "$290.00M", performance: "+21%", exitDate: "N/A", isLiked: false, comments: [] },
+        { id: 7, title: "WIF Next Wave", description: "Dogwifhat still has room.", author: "ZetaZone", authorAvatar: `https://i.pravatar.cc/20?u=${encodeURIComponent("ZetaZone")}`, date: "May 13, 2025", symbol: "WIF", network: "Solana", position: "Long", thesis: "While WIF has had a good run...", totalReturn:"--", totalReturnsLeaderboard: "+7.560%", status: "Closed", likes: 9, commentsCount: 0, shares: 0, marketCap: "$300M", volume: "$160.90M", performance: "+23%", exitDate: "N/A", isLiked: false, comments: [] },
+        { id: 8, title: "Short INIT", description: "INIT protocol looks overvalued.", author: "EtaUser", authorAvatar: `https://i.pravatar.cc/20?u=${encodeURIComponent("EtaUser")}`, date: "May 12, 2025", symbol: "INIT", network: "Ethereum", position: "Short", thesis: "INIT's current valuation doesn't match...", totalReturn:"--", totalReturnsLeaderboard: "+3.450%", status: "Active", likes: 3, commentsCount: 0, shares: 0, marketCap: "$80M", volume: "$120.45M", performance: "+170%", exitDate: "N/A", isLiked: false, comments: [] },
+        { id: 9, title: "CRV Bounce", description: "Curve Finance recovery.", author: "ThetaTester", authorAvatar: `https://i.pravatar.cc/20?u=${encodeURIComponent("ThetaTester")}`, date: "May 11, 2025", symbol: "CRV", network: "Ethereum", position: "Long", thesis: "Curve Finance is a cornerstone of DeFi...", totalReturn:"--", totalReturnsLeaderboard: "+2.310%", status: "Pending", likes: 6, commentsCount: 0, shares: 0, marketCap: "$500M", volume: "$310.30M", performance: "-25%", exitDate: "N/A", isLiked: false, comments: [] },
+        { id: 10, title: "FARTCOIN Gem", description: "This is the one!", author: "IotaInfluencer", authorAvatar: `https://i.pravatar.cc/20?u=${encodeURIComponent("IotaInfluencer")}`, date: "May 10, 2025", symbol: "FARTCOIN", network: "BSC", position: "Long", thesis: "FARTCOIN has revolutionary tokenomics...", totalReturn:"--", totalReturnsLeaderboard: "+1.040%", status: "Active", likes: 22, commentsCount: 0, shares: 0, marketCap: "$1M", volume: "$250.20M", performance: "+20%", exitDate: "N/A", isLiked: false, comments: [] }
     ];
 
     // --- Functions ---
@@ -52,16 +52,16 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function renderIdeasV1() {
-        if (!ideasContainerV1) return;
+        if (!ideasContainerV1) { console.error("ideasContainerV1 not found"); return; }
         ideasContainerV1.innerHTML = '';
         const ideasToDisplay = ideas.slice().sort((a, b) => b.id - a.id).slice(0, 10);
         ideasToDisplay.forEach(idea => {
-            const ideaCard = createIdeaCard(idea);
+            const ideaCard = createIdeaCard(idea); // Uses original card style
             if (ideaCard) ideasContainerV1.appendChild(ideaCard);
         });
     }
 
-    function createIdeaCard(idea) { // This is for V1
+    function createIdeaCard(idea) { // This is for V1 ideas
         if (!idea) { console.error("[createIdeaCard] Idea object is undefined."); return null; }
         const card = document.createElement('div');
         card.classList.add('idea-card');
@@ -112,7 +112,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function renderIdeasV2() {
-        if (!ideasContainerV2) return;
+        if (!ideasContainerV2) { console.error("ideasContainerV2 not found"); return; }
         ideasContainerV2.innerHTML = '';
         ideas.forEach(idea => {
             const ideaCardV2 = createIdeaCardV2(idea);
@@ -124,25 +124,18 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!idea) { console.error("[createIdeaCardV2] Idea object is undefined."); return null; }
         const card = document.createElement('div');
         card.classList.add('idea-card-v2');
-        card.dataset.ideaId = idea.id; // Used to identify the idea
-    
+        card.dataset.ideaId = idea.id;
         let symbolIconHtml = '';
-        // ... (symbolIconHtml logic remains the same)
         if (idea.network) {
             const networkLower = idea.network.toLowerCase();
             if (networkLower === 'ethereum' || networkLower === 'bsc') symbolIconHtml = `<i class="fab fa-ethereum"></i>`;
             else if (networkLower === 'solana') symbolIconHtml = `<i class="fa-brands fa-solana"></i>`;
             else if (networkLower === 'bitcoin') symbolIconHtml = `<i class="fab fa-btc"></i>`;
         }
-    
         const returnOrPerf = idea.totalReturnsLeaderboard || idea.performance || '--';
         const returnClass = (returnOrPerf.startsWith('+') || parseFloat(returnOrPerf.replace(/[+%]/g,'')) > 0) ? 'positive' : (returnOrPerf.startsWith('-') || parseFloat(returnOrPerf.replace(/[+%]/g,'')) < 0) ? 'negative' : '';
-    
-        // Add an 'isLiked' property to your idea objects if it doesn't exist.
-        // For now, we'll assume it might not exist and default to false.
         const isLiked = idea.isLiked || false;
-    
-    
+
         card.innerHTML = `
             <div class="idea-card-v2-header">
                 <h3 class="idea-card-v2-title">${idea.title || 'Untitled Idea'}</h3>
@@ -165,68 +158,44 @@ document.addEventListener('DOMContentLoaded', () => {
                 </div>
                 <div class="idea-card-v2-actions">
                     <button class="like-btn-v2 ${isLiked ? 'liked' : ''}" data-idea-id="${idea.id}" title="Like">
-                        <i class="far fa-heart"></i> <span class="like-count">${idea.likes || 0}</span>
+                        <i class="${isLiked ? 'fas' : 'far'} fa-heart"></i> <span class="like-count">${idea.likes || 0}</span>
                     </button>
                     <button title="Comment"><i class="far fa-comment"></i> ${idea.commentsCount || 0}</button>
                     <button title="Bookmark"><i class="far fa-bookmark"></i></button>
                 </div>
-            </div>
-        `;
-    
-        // Event listener for the like button on THIS card
+            </div>`;
         const likeButton = card.querySelector('.like-btn-v2');
         if (likeButton) {
             likeButton.addEventListener('click', function(event) {
-                event.stopPropagation(); // Prevent card click from triggering view sidebar
-    
+                event.stopPropagation();
                 const clickedIdeaId = this.dataset.ideaId;
                 const ideaToUpdate = ideas.find(i => i.id == clickedIdeaId);
-    
                 if (ideaToUpdate) {
-                    ideaToUpdate.isLiked = !ideaToUpdate.isLiked; // Toggle liked state
-                    if (ideaToUpdate.isLiked) {
-                        ideaToUpdate.likes = (ideaToUpdate.likes || 0) + 1;
-                    } else {
-                        ideaToUpdate.likes = Math.max(0, (ideaToUpdate.likes || 0) - 1); // Prevent negative likes
-                    }
-    
-                    // Update button appearance and count
+                    ideaToUpdate.isLiked = !ideaToUpdate.isLiked;
+                    if (ideaToUpdate.isLiked) ideaToUpdate.likes = (ideaToUpdate.likes || 0) + 1;
+                    else ideaToUpdate.likes = Math.max(0, (ideaToUpdate.likes || 0) - 1);
                     this.classList.toggle('liked', ideaToUpdate.isLiked);
                     this.querySelector('.like-count').textContent = ideaToUpdate.likes;
                     const heartIcon = this.querySelector('i');
-                    if (heartIcon) { // Toggle between regular and solid heart
-                        heartIcon.classList.toggle('far', !ideaToUpdate.isLiked); // Regular heart
-                        heartIcon.classList.toggle('fas', ideaToUpdate.isLiked);  // Solid heart
-                    }
-    
-                    // If the view sidebar is open for this idea, update it too
-                    const viewSidebar = document.getElementById('viewIdeaSidebar');
-                    if (viewSidebar.classList.contains('open')) {
-                        const currentSidebarIdeaId = viewSidebar.querySelector('.comments-section')?.dataset.currentIdeaId;
+                    if (heartIcon) { heartIcon.classList.toggle('far', !ideaToUpdate.isLiked); heartIcon.classList.toggle('fas', ideaToUpdate.isLiked); }
+                    const viewSidebarEl = document.getElementById('viewIdeaSidebar'); // Renamed to avoid conflict
+                    if (viewSidebarEl.classList.contains('open')) {
+                        const currentSidebarIdeaId = viewSidebarEl.querySelector('.comments-section')?.dataset.currentIdeaId;
                         if (currentSidebarIdeaId == clickedIdeaId) {
-                            const likesSpan = viewSidebar.querySelector('#viewIdeaLikes');
+                            const likesSpan = viewSidebarEl.querySelector('#viewIdeaLikes');
                             if (likesSpan) likesSpan.textContent = ideaToUpdate.likes;
-                            // You might also want to update the like button style inside the sidebar
                         }
                     }
                 }
             });
         }
-    
-        // Main card click listener (to open view sidebar)
         card.addEventListener('click', (e) => {
-            if (e.target.closest('button.like-btn-v2') || e.target.closest('button[title="Comment"]') || e.target.closest('button[title="Bookmark"]')) {
-                // If a button within actions was clicked, don't open sidebar (like button handles its own logic)
-                return;
-            }
-            populateViewSidebar(idea.id);
-            toggleSidebar(viewIdeaSidebar, true);
+            if (e.target.closest('button.like-btn-v2') || e.target.closest('button[title="Comment"]') || e.target.closest('button[title="Bookmark"]')) return;
+            populateViewSidebar(idea.id); toggleSidebar(viewIdeaSidebar, true);
         });
         return card;
     }
     
-    // IMPORTANT: Ensure submitIdeaForm is declared before this event listener is attached.
-    // const submitIdeaForm = document.getElementById('submitIdeaForm'); // Should be at the top with other selections
     if (submitIdeaForm) {
         submitIdeaForm.addEventListener('submit', function (event) {
             event.preventDefault();
@@ -239,7 +208,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 date: new Date().toLocaleDateString('en-US', { day: 'numeric', month: 'short', year: 'numeric' }),
                 symbol: formData.get('symbol').toUpperCase(), network: formData.get('network'), position: formData.get('position'),
                 thesis: formData.get('thesis'), contractAddress: formData.get('contractAddress'), totalReturn: "--",
-                totalReturnsLeaderboard: "0.000%", status: "Pending", likes: 0, commentsCount: 0, shares: 0,
+                totalReturnsLeaderboard: "0.000%", status: "Pending", likes: 0, commentsCount: 0, shares: 0, isLiked: false,
                 marketCap: "N/A", volume: "N/A", performance: "N/A", exitDate: "TBD", comments: []
             };
             ideas.unshift(newIdea);
@@ -249,9 +218,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (currentTab === 'ideas-v1') renderIdeasV1();
                 else if (currentTab === 'ideas-v2') renderIdeasV2();
                 else if (currentTab === 'leaderboard') renderLeaderboard();
-            } else { // Default to refreshing v1 if no tab is somehow active
-                renderIdeasV1();
-            }
+            } else { renderIdeasV1(); }
             toggleSidebar(submitIdeaSidebar, false);
             this.reset();
             if (positionButtons.length > 0) {
@@ -260,12 +227,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (hiddenPositionInput) hiddenPositionInput.value = positionButtons[0].dataset.value;
             }
         });
-    } else {
-        console.error("Submit Idea Form not found, event listener not attached.");
-    }
-
+    } else { console.error("Submit Idea Form (#submitIdeaForm) not found!"); }
 
     function populateViewSidebar(ideaId) {
+        // ... (This function remains largely the same, ensure it uses the correct IDs from HTML) ...
         try {
             const idea = ideas.find(i => i.id == ideaId);
             if (!idea) { console.error(`[populateViewSidebar] Idea not found for ID: ${ideaId}`); return; }
@@ -300,6 +265,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function renderComments(ideaId) {
+        // ... (This function remains largely the same) ...
         const idea = ideas.find(i => i.id == ideaId);
         const commentList = document.getElementById('commentList');
         if (!commentList) return;
@@ -324,17 +290,31 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function updateCardCommentCount(ideaId, count) {
-        if (!ideasContainerV1) return; // Check V1 container as an example
-        const card = ideasContainerV1.querySelector(`.idea-card[data-idea-id='${ideaId}']`); // V1 card
-        // Could also check/update V2 card if needed, or make this function more generic
-        if (card) {
-            const commentCountElement = card.querySelector('.fa-comment');
-            if (commentCountElement && commentCountElement.nextSibling) {
-                 commentCountElement.nextSibling.textContent = ` ${count}`;
+        // This function needs to know which container (v1 or v2) is active or check both.
+        // For now, assuming it updates V1 card if found.
+        if (ideasContainerV1) {
+            const cardV1 = ideasContainerV1.querySelector(`.idea-card[data-idea-id='${ideaId}']`);
+            if (cardV1) {
+                const commentCountElement = cardV1.querySelector('.fa-comment');
+                if (commentCountElement && commentCountElement.nextSibling) {
+                    commentCountElement.nextSibling.textContent = ` ${count}`;
+                }
             }
-            const ideaInArray = ideas.find(i => i.id == ideaId);
-            if(ideaInArray) ideaInArray.commentsCount = count;
         }
+        // Add similar logic for V2 cards if their structure for comment count display is different
+        if (ideasContainerV2) {
+             const cardV2 = ideasContainerV2.querySelector(`.idea-card-v2[data-idea-id='${ideaId}']`);
+             if (cardV2) {
+                const commentCountElement = cardV2.querySelector('button[title="Comment"]'); // Assuming structure
+                if (commentCountElement) {
+                    // Example: Update text like "<i>...</i> N"
+                    const icon = commentCountElement.querySelector('i');
+                    commentCountElement.innerHTML = (icon ? icon.outerHTML : '') + ` ${count}`;
+                }
+             }
+        }
+        const ideaInArray = ideas.find(i => i.id == ideaId);
+        if(ideaInArray) ideaInArray.commentsCount = count;
     }
 
     const sendCommentBtn = document.getElementById('sendCommentBtn');
@@ -367,7 +347,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (overlay) overlay.addEventListener('click', () => {
         toggleSidebar(submitIdeaSidebar, false);
         toggleSidebar(viewIdeaSidebar, false);
-        if (mainNav && mainNav.classList.contains('active')) { // Also close mobile nav if open
+        if (mainNav && mainNav.classList.contains('active')) {
             mainNav.classList.remove('active');
             if (mobileNavToggle) mobileNavToggle.setAttribute('aria-expanded', 'false');
             overlay.classList.remove('mobile-nav-active');
@@ -384,6 +364,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function renderLeaderboard() {
+        // ... (renderLeaderboard code remains the same as last working version) ...
         if (!leaderboardBody) { console.error("Leaderboard body (tbody) not found!"); return; }
         leaderboardBody.innerHTML = '';
         const sortedIdeas = [...ideas];
@@ -397,7 +378,12 @@ document.addEventListener('DOMContentLoaded', () => {
             const row = document.createElement('tr');
             row.dataset.ideaId = idea.id;
             let symbolIconHtml = '';
-            if (idea.network) { /* ... icon logic ... */ }
+            if (idea.network) {
+                const networkLower = idea.network.toLowerCase();
+                if (networkLower === 'ethereum' || networkLower === 'bsc') symbolIconHtml = `<i class="fab fa-ethereum leaderboard-symbol-icon"></i>`;
+                else if (networkLower === 'solana') symbolIconHtml = `<i class="fa-brands fa-solana leaderboard-symbol-icon"></i>`;
+                else if (networkLower === 'bitcoin') symbolIconHtml = `<i class="fab fa-btc leaderboard-symbol-icon"></i>`;
+            }
             const performanceRaw = parseFloat(idea.performance?.replace(/[+%]/g, ''));
             const performanceClass = isNaN(performanceRaw) ? '' : (performanceRaw >= 0 ? 'positive' : 'negative');
             const statusClass = idea.status ? idea.status.toLowerCase() : '';
@@ -465,7 +451,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const isNavOpen = mainNav.classList.toggle('active');
             mobileNavToggle.setAttribute('aria-expanded', isNavOpen);
             if (overlay) overlay.classList.toggle('mobile-nav-active', isNavOpen);
-            if (isNavOpen) { // When opening mobile nav, hide other sidebars
+            if (isNavOpen) { 
                 toggleSidebar(submitIdeaSidebar, false);
                 toggleSidebar(viewIdeaSidebar, false);
             }
