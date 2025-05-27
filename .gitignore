@@ -84,7 +84,8 @@ out
 
 # Nuxt.js build output
 .nuxt
-dist
+# dist # Commenting this out as Vite uses dist/ for its build output, which is handled below.
+         # If you had a Nuxt project previously, this might be from there. For Vite, dist/ is fine.
 
 # Svelte Sapper build output
 __sapper__
@@ -93,7 +94,7 @@ __sapper__
 # Gatsby build output
 .cache/
 # Add any Gatsby files outlined in Gatsby's documentation here e.g. (https://www.gatsbyjs.org/docs/gitignore/)
-public
+# public # <-- THIS LINE WAS REMOVED / COMMENTED OUT
 
 # VuePress build output
 .vuepress/dist
@@ -102,9 +103,9 @@ public
 .docusaurus
 
 # Vite build output
-dist/
+dist/       # This correctly ignores the build output directory for Vite
 dist-ssr/
-*.vite # Vite cache directory
+*.vite      # Vite cache directory
 
 # Private keys, sensitive data, etc.
 *.pem
